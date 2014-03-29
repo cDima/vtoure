@@ -2,17 +2,21 @@
     if (VK === undefined) console.error("Issue finding VK global object");
 
     var permissionsGranted = false;
+    var permissionsAlert = $("permissionsAlert");
+
+    $("#audiopermissions").onclick = requestPermissions;
 
     function log(msg) {
         console.log(msg);
         $("#log").append("<i>" + msg + "</i><br>");
     }
+
     function error(err) {
         console.error(err);
         $("#log").append("<i class=\"text-danger\">" + err + "</i><br>");
     }
 
-    $("#audiopermissions").onclick = requestPermissions;
+    
 
     VK.init(function () {
         // API initialization succeeded 
@@ -27,8 +31,8 @@
         log("calling account.getAppPermissions");
         VK.api("account.getAppPermissions", null, getAppPermissions); // ask for permissions
         // if no permissions, ask for them
-        requestPermissions();
-        if (permissionsGranted) getAudioAuthors();
+        //requestPermissions();
+        //if (permissionsGranted) getAudioAuthors();
     }, function () {
         // API initialization failed 
         // Can reload page here 
@@ -41,8 +45,36 @@
             // Действия с полученными данными 
             debugger;
             log("users.get: " + data);
+
+            var firstName = data.response[0].first_name; // "Дмитрий"
+            var lastName = data.response[0].last_name; // "Садаков"
+            var audiosOK = data.response[0].can_see_audio; // 1 // i can see bass
+            var photo = data.response[0].photo_50; //  "http://cs9482.vk.me/v9482635/202d/dn-hQPBWYuQ.jpg"
+            var cityName = data.response[0].city.title; // "New York City"
+            var country = data.response[0].country.title; // "США"
+            var audios = data.response[0].counters.audios; // 512
+
+            $("#userimg").attr("src", photo);
+            $("#personname").text(firstName + " " + lastName);
+            $("#city").text(cityName + ", " + country);
+            $("#audionum").text(audios);
+
         });
     };
+
+    // test
+
+    var firstName = "Дмитрий";
+    var lastName = "Садаков";
+    var photo = "http://cs9482.vk.me/v9482635/202d/dn-hQPBWYuQ.jpg"
+    var cityName = "New York City";
+    var country = "США";
+    var audios = 512;
+
+    $("#userimg").attr("src", photo);
+    $("#personname").text(firstName + " " + lastName);
+    $("#city").text(cityName + ", " + country);
+    $("#audionum").text(audios);
 
     function isAppUser(result) {
         log("in isAppUser - the app is installed  " + (result.response === 1));
@@ -51,6 +83,8 @@
     function getAppPermissions(result) {
         log("in onGetPermissions - permissions of the app: " + (result.response));
         verifyPermissions(result.response);
+
+        permissionsAlert.toggle(!permissionsGranted);
     };
 
     function verifyPermissions(perms) {
@@ -61,21 +95,22 @@
         log("video  (+16)	Доступ к видеозаписям." + (perms & 16));
         log("menu +256	Добавление ссылки на приложение в меню слева." + (perms & 256));
 
-        // notify +1, audio +8
-        var neededPermissions = 9;
-        permissionsGranted = (perms === neededPermissions);
+        // audio +8
+        var neededPermissions = 8;
+        permissionsGranted = (perms & neededPermissions);
         if (!permissionsGranted) error("needed Permissions are not granted, need " + neededPermissions + " have " + perms);
         return permissionsGranted;
     }
 
     function requestPermissions() {
-        VK.callMethod("showSettingsBox", 9); // call for permissions
+        VK.callMethod("showSettingsBox", 8); // call for permissions
         return false;
     }
 
     function onSettingsChanged(settings) {
         log("in onSettingsChanged");
         verifyPermissions(settings);
+        permissionsAlert.toggle(!permissionsGranted);
         getAudioAuthors();
     };
 
