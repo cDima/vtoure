@@ -2,7 +2,9 @@
     if (VK === undefined) console.error("Issue finding VK global object");
 
     var permissionsGranted = false;
-    var permissionsAlert = $("permissionsAlert");
+    var permissionsAlert = $("#permissionsAlert");
+    var personGreeting = $("#personGreeting");
+    personGreeting.hide();
 
     $("#audiopermissions").onclick = requestPermissions;
 
@@ -29,10 +31,8 @@
         log("calling users.isAppUser");
         VK.api("users.isAppUser", null, isAppUser); // for information only
         log("calling account.getAppPermissions");
-        VK.api("account.getAppPermissions", null, getAppPermissions); // ask for permissions
-        // if no permissions, ask for them
-        //requestPermissions();
-        //if (permissionsGranted) getAudioAuthors();
+        VK.api("account.getAppPermissions", null, getAppPermissions); 
+
     }, function () {
         // API initialization failed 
         // Can reload page here 
@@ -58,23 +58,9 @@
             $("#personname").text(firstName + " " + lastName);
             $("#city").text(cityName + ", " + country);
             $("#audionum").text(audios);
-
+            personGreeting.show();
         });
     };
-
-    // test
-
-    var firstName = "Дмитрий";
-    var lastName = "Садаков";
-    var photo = "http://cs9482.vk.me/v9482635/202d/dn-hQPBWYuQ.jpg"
-    var cityName = "New York City";
-    var country = "США";
-    var audios = 512;
-
-    $("#userimg").attr("src", photo);
-    $("#personname").text(firstName + " " + lastName);
-    $("#city").text(cityName + ", " + country);
-    $("#audionum").text(audios);
 
     function isAppUser(result) {
         log("in isAppUser - the app is installed  " + (result.response === 1));
@@ -97,8 +83,10 @@
 
         // audio +8
         var neededPermissions = 8;
-        permissionsGranted = (perms & neededPermissions);
-        if (!permissionsGranted) error("needed Permissions are not granted, need " + neededPermissions + " have " + perms);
+        permissionsGranted = (perms & neededPermissions) === neededPermissions;
+        if (!permissionsGranted) {
+            error("needed Permissions are not granted, need " + neededPermissions + " have " + perms);
+        }
         return permissionsGranted;
     }
 
