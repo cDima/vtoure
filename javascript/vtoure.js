@@ -18,8 +18,6 @@
         $("#log").append("<i class=\"text-danger\">" + err + "</i><br>");
     }
 
-    
-
     VK.init(function () {
         // API initialization succeeded 
         // Your code here 
@@ -28,8 +26,8 @@
         VK.addCallback("onSettingsChanged", onSettingsChanged);
         VK.addCallback("onApplicationAdded", onApplicationAdded);
 
-        log("calling users.isAppUser");
-        VK.api("users.isAppUser", null, isAppUser); // for information only
+        //log("calling users.isAppUser");
+        //VK.api("users.isAppUser", null, isAppUser); // for information only
         log("calling account.getAppPermissions");
         VK.api("account.getAppPermissions", null, getAppPermissions); 
 
@@ -68,9 +66,7 @@
 
     function getAppPermissions(result) {
         log("in onGetPermissions - permissions of the app: " + (result.response));
-        verifyPermissions(result.response);
-
-        permissionsAlert.toggle(!permissionsGranted);
+        onSettingsChanged(result.response);
     };
 
     function verifyPermissions(perms) {
@@ -104,6 +100,6 @@
 
     function onApplicationAdded() {
         log("in onApplicationAdded");
-        getAudioAuthors();
+        //getAudioAuthors();
     };
 })
