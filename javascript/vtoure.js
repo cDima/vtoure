@@ -1,20 +1,29 @@
 ﻿$(function() {
     if (VK === undefined) console.error("Issue finding VK global object");
 
+    function log(msg) {
+        console.log(msg);
+        $("#log").append("<i>" + msg + "</i><br>");
+    }
+    function error(err) {
+        console.error(err);
+        $("#log").append("<i class=\"text-danger\">" + err + "</i><br>");
+    }
+
     var audioAuthors = 0;
 
     VK.init(function () {
         // API initialization succeeded 
         // Your code here 
-        console.log("VK init successful");
+        log("VK init successful");
 
         VK.addCallback("onSettingsChanged", onSettingsChanged);
         VK.addCallback("onApplicationAdded", onApplicationAdded);
 
-        console.log("calling account.getAppPermissions");
+        log("calling account.getAppPermissions");
         VK.api("account.getAppPermissions", null, onGetPermissions);
 
-        console.log("calling users.isAppUser");
+        log("calling users.isAppUser");
         VK.api("users.isAppUser", null, onGetPermissions);
         
         //getVKAuthors();
@@ -25,25 +34,26 @@
     }, '5.16');
 
     function getVKAuthors() {
-        console.log("in getVKAuthors");
+        log("in getVKAuthors");
         VK.api("users.get", { user_ids: "1,2,3,4" }, function (data) {
             // Действия с полученными данными 
-            console.log("users.get: " + data);
+            log("users.get: " + data);
         });
     };
 
     function onGetPermissions(result) {
-        console.log("in onGetPermissions");
-        console.log("permissions of the app: " + result);
+        log("in onGetPermissions");
+        log("permissions of the app: " + result);
+        // result === 1 if installed the app;
     };
 
     function onSettingsChanged(settings) {
-        console.log("in onSettingsChanged");
+        log("in onSettingsChanged");
         getVKAuthors();
     };
 
     function onApplicationAdded(settings) {
-        console.log("in onApplicationAdded");
+        log("in onApplicationAdded");
         getVKAuthors();
     };
 })
