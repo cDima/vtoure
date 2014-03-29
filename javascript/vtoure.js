@@ -12,7 +12,7 @@
         $("#log").append("<i class=\"text-danger\">" + err + "</i><br>");
     }
 
-    $("#audiopermissions").click = requestPermissions;
+    $("#audiopermissions").onclick = requestPermissions;
 
     VK.init(function () {
         // API initialization succeeded 
@@ -28,8 +28,7 @@
         VK.api("account.getAppPermissions", null, getAppPermissions); // ask for permissions
         // if no permissions, ask for them
         requestPermissions();
-
-        //getAudioAuthors();
+        if (permissionsGranted) getAudioAuthors();
     }, function () {
         // API initialization failed 
         // Can reload page here 
@@ -40,6 +39,7 @@
         log("in getAudioAuthors");
         VK.api("users.get", { fields: "city, country,photo_50,can_see_audio,counters" }, function (data) {
             // Действия с полученными данными 
+            debugger;
             log("users.get: " + data);
         });
     };
@@ -63,8 +63,8 @@
 
         // notify +1, audio +8
         var neededPermissions = 9;
-        error("needed Permissions are not granted, need " + neededPermissions + " have " + perms);
-        permissionsGranted = (perms !== neededPermissions);
+        permissionsGranted = (perms === neededPermissions);
+        if (!permissionsGranted) error("needed Permissions are not granted, need " + neededPermissions + " have " + perms);
         return permissionsGranted;
     }
 
@@ -76,6 +76,7 @@
     function onSettingsChanged(settings) {
         log("in onSettingsChanged");
         verifyPermissions(settings);
+        getAudioAuthors();
     };
 
     function onApplicationAdded() {
