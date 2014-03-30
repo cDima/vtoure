@@ -25,13 +25,10 @@ vtoureApp.controller('vtoureCtrl', function ($scope) {
 
     // usage: sleep(3000, foobar_continued);
     function sleep(millis, callback) {
-        setTimeout(function ()
-        { callback(); }
-        , millis);
+        setTimeout(function (){ callback(); }, millis);
     }
 
     function populateConcerts() {
-        
         var unqueriedArtists = $scope.artists.filter(function (artist) { return !artist.queriedEvents; });
         $scope.progressCount = $scope.artists.length - unqueriedArtists.length;
         log('progressCount:' + $scope.progressCount);
@@ -43,14 +40,15 @@ vtoureApp.controller('vtoureCtrl', function ($scope) {
         });
 
         if (unqueriedArtists.length != 0)
-            sleep(500, populateConcerts); // query again in a bit
+            sleep(200, populateConcerts); // query again in a bit
     };
 
     function getConcerts(artist) {
 
         artist.queriedEvents = true;
         $scope.progressCount++;
-        log('progressCount:' + $scope.progressCount);
+        $scope.$apply(); // update angular for some reason
+
         window.Songkick.GetEvents(artist.name, artist.displayName, onNewEvents, onError);
         
         function onNewEvents(response) {

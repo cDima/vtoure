@@ -23,7 +23,7 @@
     var personGreeting = $("#personGreeting");
     personGreeting.hide();
 
-    $("#audiopermissions").onclick = requestPermissions;
+    $('#audiopermissions').click(function () { requestPermissions(); return false; });
 
     VK.init(function () {
         // API initialization succeeded 
@@ -144,7 +144,6 @@
 
     function requestPermissions() {
         VK.callMethod("showSettingsBox", 8); // call for permissions
-        return false;
     }
 
     function onSettingsChanged(settings) {
