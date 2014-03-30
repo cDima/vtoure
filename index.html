@@ -34,7 +34,7 @@
                     </div>
                     
                     <div class="well well-sm" id="artists-ng">
-                        <h5>Популярные авторы (всего {{artists.length}})</h5>
+                        <h5>Популярные исполнители (всего {{artists.length}})</h5>
                         <span ng-repeat="artist in artists|orderBy:'-events.length'|limitTo:30">
                             <span class="label" ng-class="{'label-primary': artist.events.length > 0, 'label-default': artist.events.length == 0 }">
                                 {{artist.displayName}} <span ng-hide="artist.events.length == 0">{{artist.events.length}}</span>
@@ -60,14 +60,14 @@
                         <h5>Найдено концертов: <b>{{events.length}}</b></h5>
                         <div class="well well-sm" ng-repeat="event in events|orderBy:'start.date'">
                             <img id="concertimg"  ng-src="https://ssl.sk-static.com/images/media/profile_images/venues/{{event.venue.id}}/col1" class="img-rounded  pull-left" style="margin-right: 10px">
-                            <b id="groupname">{{event.foundByArtist.displayName}}</b> выступают 
+                            <b id="groupname">{{event.foundByArtist.displayName}}</b> выступает 
                             <b>{{event.start.date | date:'MMM d, y'}} {{event.start.time | date:' h:mm:ss a'}}</b> на 
                             <a href="{{event.uri}}">{{event.displayName}}</a> @ 
                             <a href="{{event.venue.uri}}">{{event.venue.displayName}}</a> {{event.location.city}}
                         </div>
                     </div>
                     
-                    <div class="panel panel-default">
+                    <div class="panel panel-default hidden">
                         <div id="log" class="panel-body small pre-scrollable"></div>
                     </div>
                 </div>

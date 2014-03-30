@@ -15,7 +15,7 @@ vtoureApp.controller('vtoureCtrl', function ($scope) {
 
     $scope.newArtists = function (incomingArtists) {
         
-        incomingArtists = incomingArtists.slice(0, 50); // test
+        //incomingArtists = incomingArtists.slice(0, 50); // test
 
         this.artists = this.artists.concat(incomingArtists);
         log('incomingArtists:' + this.artists.length);
