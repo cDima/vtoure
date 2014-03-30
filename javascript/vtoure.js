@@ -1,6 +1,8 @@
 ﻿$(function () {
 
-    //getConcerts();
+    //getConcerts("glitch+mob");
+    //getConcerts("moby");
+    //getConcerts("tycho");
     //return;
 
     if (VK === undefined) console.error("Issue finding VK global object");
@@ -104,22 +106,24 @@
             artists.reverse();
             
             // popular artists
-            $("#artists").append("Популярные авторы: " + artists.slice(0, 5).map(function(s) { return s.name + " (" + s.hitcount + ") "; }).join(" "));
+            var popularArtists = artists.slice(0, 5);
+            $("#artists").append("Популярные авторы: " + popularArtists.map(function (s) { return s.name + " (" + s.hitcount + ") "; }).join(" "));
 
             //ask songkick for popular bands
-            getConcerts(artists);
+            popularArtists.each(function(s) {
+                 getConcerts(s.name);
+            });
         });
     };
 
-    function getConcerts() {
+    function getConcerts(artist) {
         var apikey = "moHNsXaKT6XHh7pP";
-        var artist = "glitch+mob";
+        //var artist = "glitch+mob";
         $.ajax({
             url: "http://api.songkick.com/api/3.0/events.json?location=clientip&apikey=" + apikey + "&artist_name=" + artist,
             dataType: "jsonp",
             jsonp: 'jsoncallback',
             success: function (response) {
-                debugger;
                 $.each(response.resultsPage.results.event, function (i, entry) {
 
                     /*
@@ -141,16 +145,15 @@
                     $("#events").append('<li> ' + artist +
                     ' выступает ' + entry.start.date +
                     ' <a href="' + entry.uri + '">' +
-                    entry.displayName + '</a> @ <a href="' + entry.venue.uri + '">' + entry.venue.displayName + '</a>(' +
-                    entry.location.city + ')' +
+                    entry.displayName + '</a> @ <a href="' + entry.venue.uri + '">' + entry.venue.displayName + '</a> ' +
+                    entry.location.city + 
                     '<img src="https://ssl.sk-static.com/images/media/profile_images/venues/' +
-                    entry.venue.id + '/col1" >' +
-                    '</li>');
+                    entry.venue.id + '/col1">' +'</li>');
                 });
             },
-            error: function (error) {
+            error: function (errr) {
                 debugger;
-                error(error);
+                error(errr);
             }
         });
 
