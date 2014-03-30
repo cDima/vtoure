@@ -110,13 +110,13 @@
             $("#artists").append("Популярные авторы: " + popularArtists.map(function (s) { return s.name + " (" + s.hitcount + ") "; }).join(" "));
 
             //ask songkick for popular bands
-            popularArtists.each(function(s) {
-                 getConcerts(s.name);
+            $(popularArtists).each(function (s) {
+                 getConcerts(s.name, s.displayName);
             });
         });
     };
 
-    function getConcerts(artist) {
+    function getConcerts(artist, displayName) {
         var apikey = "moHNsXaKT6XHh7pP";
         //var artist = "glitch+mob";
         $.ajax({
@@ -142,7 +142,7 @@
                     entry.performance[0].artist.uri // "http://www.songkick.com/artists/3120231-foster-the-people?utm_source=25504&utm_medium=partner"
                     */
                     
-                    $("#events").append('<li> ' + artist +
+                    $("#events").append('<li> ' + displayName +
                     ' выступает ' + entry.start.date +
                     ' <a href="' + entry.uri + '">' +
                     entry.displayName + '</a> @ <a href="' + entry.venue.uri + '">' + entry.venue.displayName + '</a> ' +
