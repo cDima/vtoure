@@ -25,13 +25,24 @@
                       <div class="panel-body">
                           <img id="userimg" src="" class="img-rounded  pull-left" style="margin-right: 10px">
                           Добропожаловать, <i id="personname">аноним</i>.<br/>
-                          <small>Поиск концертов в <b id="city">НЬю Йорке, США</b>.</small> <small>Обнаружено <b id="audionum">...</b> звукозаписей.</small>
+                          <small>Обнаружено <b id="audionum">...</b> звукозаписей.</small>
+                          <small>Поиск концертов в <b id="city">НЬю Йорке, США</b>.</small> 
                       </div>
                     </div>
 
                     <div class="well well-sm" id="permissionsAlert">
                         <div class="text-muted">Приложению нужен доступ к аудио записям. <button id="audiopermissions" class="btn btn-primary btn-xs">разрешить доступ к аудио</button></div>
                     </div>
+                    <div class="well well-sm" id="artists">
+                        
+                    </div>
+                    
+                    <div class="well well-sm">
+                        <ul id="events">
+                            
+                        </ul>
+                    </div>
+                    
                     <div class="panel panel-default">
                         <div id="log" class="panel-body small pre-scrollable"></div>
                     </div>
@@ -45,6 +56,7 @@
         <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>-->
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
         <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script>window.onerror = function () { window.vknotloaded("Error caught"); };</script>
         <script src="//vk.com/js/api/xd_connection.js?2"  type="text/javascript"></script>
         <script src="javascript/vtoure.js" type="text/javascript"></script>
     </body>
