@@ -110,7 +110,7 @@
             $("#artists").append("Популярные авторы: " + popularArtists.map(function (s) { return s.name + " (" + s.hitcount + ") "; }).join(" "));
 
             //ask songkick for popular bands
-            $(popularArtists).each(function (s) {
+            $(popularArtists).each(function (i, s) {
                  getConcerts(s.name, s.displayName);
             });
         });
