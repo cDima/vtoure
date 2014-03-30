@@ -1,8 +1,12 @@
 ﻿$(function () {
 
-    //getConcerts("glitch+mob");
-    //getConcerts("moby");
-    //getConcerts("tycho");
+    //ask songkick for popular bands
+    //var testartists = [{ name: 'glitch mob', displayName: 'the glitch mob' }, 
+    //{ name: 'xx', displayName: 'xx' },
+    //{ name: 'tycho', displayName: 'tycho' }];
+    //testartists.forEach(function (s) {
+    //    getConcerts(s.name, s.displayName);
+    //});
     //return;
 
     if (VK === undefined) console.error("Issue finding VK global object");
@@ -110,7 +114,7 @@
             $("#artists").append("Популярные авторы: " + popularArtists.map(function (s) { return s.name + " (" + s.hitcount + ") "; }).join(" "));
 
             //ask songkick for popular bands
-            $(popularArtists).each(function (i, s) {
+            popularArtists.forEach(function (s) {
                  getConcerts(s.name, s.displayName);
             });
         });
