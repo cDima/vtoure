@@ -33,7 +33,7 @@
                         <div class="text-default">Приложению нужен доступ к аудио записям. <button id="audiopermissions" class="btn btn-primary btn-xs">разрешить доступ к аудио</button></div>
                     </div>
                     
-                    <div class="well well-sm" id="artists-ng">
+                    <div class="well well-sm" id="artists-ng" ng-hide="(artists.length == 0)">
                         <h5>Популярные исполнители (всего {{artists.length}})</h5>
                         <span ng-repeat="artist in artists|orderBy:'-events.length'|limitTo:30">
                             <span class="label" ng-class="{'label-primary': artist.events.length > 0, 'label-default': artist.events.length == 0 }">
@@ -56,7 +56,7 @@
                         </div>
                     </div>
                     
-                    <div>
+                    <div ng-hide="(artists.length == 0)">
                         <h5>Найдено концертов: <b>{{events.length}}</b></h5>
                         <div class="well well-sm" ng-repeat="event in events|orderBy:'start.date'">
                             <img id="concertimg"  ng-src="https://ssl.sk-static.com/images/media/profile_images/venues/{{event.venue.id}}/col1" class="img-rounded  pull-left" style="margin-right: 10px">
