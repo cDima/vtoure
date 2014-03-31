@@ -58,7 +58,7 @@
 
             $("#userimg").attr("src", photo);
             $("#personname").text(firstName + " " + lastName);
-            $("#city").text(cityName + ", " + country);
+            //$("#city").text(cityName + ", " + country);
             $("#audionum").text(audios);
             personGreeting.show();
         });
