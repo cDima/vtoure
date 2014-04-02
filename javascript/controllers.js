@@ -58,7 +58,7 @@ vtoureApp.controller('vtoureCtrl', function ($scope) {
 
         artist.queriedEvents = true;
         $scope.progressCount++;
-        //$scope.$apply(); // update angular for some reason
+        $scope.$apply(); // update angular for some reason
 
         window.Songkick.GetEvents(artist.name, artist.displayName, onNewEvents, onError);
         
