@@ -1,20 +1,5 @@
 ﻿$(function () {
 
-    //var scope = angular.element($("#vtoureApp")).scope();
-    //scope.$apply(function () {
-    //    scope.artists = [
-    //    {
-    //        name: 'the glitch mob',
-    //        displayName: 'glitch',
-    //        events: [
-    //        {
-    //             name: 'event name'
-    //        }]
-    //    }];
-    //});
-
-    //return;
-
     if (VK === undefined) console.error("Issue finding VK global object");
 
     var permissionsGranted = false;
@@ -48,6 +33,8 @@
     function getPersonalGreeting() {
         VK.api("users.get", { fields: "city, country,photo_50,can_see_audio,counters" }, function (data) {
             // Действия с полученными данными 
+            debugger;
+            var id = data.response[0].id; // 1
             var firstName = data.response[0].first_name; // "Дмитрий"
             var lastName = data.response[0].last_name; // "Садаков"
             var audiosOK = data.response[0].can_see_audio; // 1 // i can see bass
@@ -61,16 +48,25 @@
             //$("#city").text(cityName + ", " + country);
             $("#audionum").text(audios);
             personGreeting.show();
+
+            // analytic tracking
+            event("Person", "Entered", firstName + " " + lastName + " (" + id + ")", audios, true);
         });
     }
 
     function getAudioAuthors() {
         log("in getAudioAuthors");
         VK.api("audio.get", {}, function (data) {
-            
-            // Действия с полученными данными 
+
+            if (data.error !== undefined) {
+                error(data.error.error_msg);
+                return;
+            }
+
             var audiocount = data.response.count;
-            var tracks = data.response.items; // without first element
+            var tracks = data.response.items;
+
+            event("Person", "AllowedAudioAccess", "Tracks #", audiocount, true);
 
             artists = [];
             $.each(tracks, function (i, track) {
@@ -111,7 +107,7 @@
             // push to angular's model.
             var scope = angular.element($("#vtoureApp")).scope();
             scope.$apply(function () {
-                scope.newArtists(artists);
+                scope.newArtists(artists); // scan all artists.
             });
         });
     };
@@ -144,6 +140,7 @@
 
     function requestPermissions() {
         VK.callMethod("showSettingsBox", 8); // call for permissions
+        event("Person", "SettingsClicked", null, null, false); // is actually interaction
     }
 
     function onSettingsChanged(settings) {
@@ -152,27 +149,10 @@
         permissionsAlert.toggle(!permissionsGranted);
         getPersonalGreeting();
         getAudioAuthors();
+        event("Person", "SettingsChanged", "Settings Changed", settings, true);
     };
 
     function onApplicationAdded() {
         log("in onApplicationAdded");
     };
 })
-
-// global functions
-
-function resizeVKHeight() {
-    var height = $('#vkframe').height();
-    var width = 600;//$('#vkframe').width();
-    VK.callMethod('resizeWindow', width, height);
-}
-
-function log(msg) {
-    console.log(msg);
-    $("#log").append("<i>" + msg + "</i><br>");
-}
-
-function error(err) {
-    console.error(err);
-    $("#log").append("<i class=\"text-danger\">" + err + "</i><br>");
-}

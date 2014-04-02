@@ -12,6 +12,9 @@ vtoureApp.controller('vtoureCtrl', function ($scope) {
     $scope.events = [];
 
     $scope.progressCount = 0;
+    $scope.eventsFound = 0;
+    $scope.startTime = 0;
+    $scope.timeComplete = 0;
 
     $scope.newArtists = function (incomingArtists) {
         
@@ -19,6 +22,8 @@ vtoureApp.controller('vtoureCtrl', function ($scope) {
 
         this.artists = this.artists.concat(incomingArtists);
         log('incomingArtists:' + this.artists.length);
+
+        $scope.startTime = new Date().getTime();
 
         populateConcerts();
     }
@@ -39,15 +44,21 @@ vtoureApp.controller('vtoureCtrl', function ($scope) {
             getConcerts(artist);
         });
 
-        if (unqueriedArtists.length != 0)
+        if (unqueriedArtists.length != 0) {
             sleep(200, populateConcerts); // query again in a bit
+        } else {
+            var end = new Date().getTime();
+            $scope.timeComplete = end - $scope.startTime;
+            event("Library", "Scan Complete", "Scan Complete", $scope.timeComplete, true);
+            event("Library", "Concerts available", "Concerts available", $scope.eventsFound, true);
+        }
     };
 
     function getConcerts(artist) {
 
         artist.queriedEvents = true;
         $scope.progressCount++;
-        $scope.$apply(); // update angular for some reason
+        //$scope.$apply(); // update angular for some reason
 
         window.Songkick.GetEvents(artist.name, artist.displayName, onNewEvents, onError);
         
@@ -56,6 +67,7 @@ vtoureApp.controller('vtoureCtrl', function ($scope) {
                 var events = response.resultsPage.results.event;
 
                 artist.events = events;
+                $scope.eventsFound += events.length;
 
                 events.forEach(function(e) {
                     e.foundByArtist = artist; // add artist to event graph
@@ -63,6 +75,7 @@ vtoureApp.controller('vtoureCtrl', function ($scope) {
                 });
 
                 $scope.$apply(); // update angular for some reason
+
                 resizeVKHeight();
             } else {
                 artist.events = [];
