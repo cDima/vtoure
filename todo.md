@@ -1,4 +1,3 @@
-
 todo
 ---
 
@@ -8,8 +7,11 @@ Google analytics:
 - locations by songkick clientip vs  by profile vs ip-api.com 
 - clicks on external links 
 
-Local storage of artists with reload by location+artistname
-Artist name from music fields.
+Angular:
+- batch module for faster concert retrieval with cache hits
+- Local storage of artists with reload by location+artistname
+- unit tests; 
+- Artist name from music fields.
 
 Location improvements:
 - Display google map of location from clientip, ip-api and flexible 'search by text' via google maps api, navigator.geolocation.getcurrentposition. 
