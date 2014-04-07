@@ -11,21 +11,13 @@
     $('#audiopermissions').click(function () { requestPermissions(); return false; });
 
     VK.init(function () {
-        // API initialization succeeded 
-        // Your code here 
         log("VK init successful");
-
         VK.addCallback("onSettingsChanged", onSettingsChanged);
         VK.addCallback("onApplicationAdded", onApplicationAdded);
-
-        //log("calling users.isAppUser");
-        //VK.api("users.isAppUser", null, isAppUser); // for information only
-        log("calling account.getAppPermissions");
         VK.api("account.getAppPermissions", null, getAppPermissions); 
 
     }, function () {
         // API initialization failed 
-        // Can reload page here 
         error("VK init unsuccessful");
     }, '5.16');
 
@@ -33,11 +25,11 @@
     function getPersonalGreeting() {
         VK.api("users.get", { fields: "city, country,photo_50,can_see_audio,counters" }, function (data) {
             // Действия с полученными данными 
-            debugger;
+            //debugger;
             var id = data.response[0].id; // 1
             var firstName = data.response[0].first_name; // "Дмитрий"
             var lastName = data.response[0].last_name; // "Садаков"
-            var audiosOK = data.response[0].can_see_audio; // 1 // i can see bass
+            var audiosOK = data.response[0].can_see_audio; // 1 // i can see bass lol
             var photo = data.response[0].photo_50; //  "http://cs9482.vk.me/v9482635/202d/dn-hQPBWYuQ.jpg"
             var cityName = data.response[0].city.title; // "New York City"
             var country = data.response[0].country.title; // "США"
@@ -111,11 +103,7 @@
             });
         });
     };
-
-    function isAppUser(result) {
-        log("in isAppUser - the app is installed  " + (result.response === 1));
-    }
-
+    
     function getAppPermissions(result) {
         log("in onGetPermissions - permissions of the app: " + (result.response));
         onSettingsChanged(result.response);

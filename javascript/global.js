@@ -24,3 +24,10 @@ function event(category, action, opt_label, opt_value, opt_noninteraction) {
     }
 };
 
+function trackTiming(category, variable, time, opt_label, opt_sample) {
+    log('Event [' + category + "," + variable + "," + time + "," + opt_label + "," + opt_sample + "]");
+    if (_gaq !== undefined) {
+        _gaq.push(['_trackTiming', category, variable, time, opt_label, opt_sample]);
+    }
+};
+

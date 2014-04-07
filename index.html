@@ -17,10 +17,9 @@
                     <div class="page-header">
                         <h2>Втуре - поиск концертов</h2>
                     </div>
-                    
                 </div>
                 <div class="col-md-12">
-                    <div class="panel panel-default" id="personGreeting">
+                    <div class="panel panel-default" id="personGreeting" ng-cloak>
                       <div class="panel-body">
                           <img id="userimg" src="" class="img-rounded  pull-left" style="margin-right: 10px">
                           Добропожаловать, <i id="personname">аноним</i>.<br/>
@@ -29,11 +28,11 @@
                       </div>
                     </div>
 
-                    <div class="well well-sm" id="permissionsAlert">
+                    <div class="well well-sm" id="permissionsAlert" ng-cloak>
                         <div class="text-default">Приложению нужен доступ к аудио записям. <button id="audiopermissions" class="btn btn-primary btn-xs">разрешить доступ к аудио</button></div>
                     </div>
                     
-                    <div class="well well-sm" id="artists-ng" ng-hide="(artists.length == 0)">
+                    <div class="well well-sm" id="artists-ng" ng-hide="(artists.length == 0)" ng-cloak>
                         <h5>Популярные исполнители (всего {{artists.length}})</h5>
                         <span ng-repeat="artist in artists|orderBy:'-events.length'|limitTo:50">
                             <span class="label" ng-class="{'label-primary': artist.events.length > 0, 'label-default': artist.events.length == 0 }">
@@ -45,7 +44,7 @@
                     
                     <div class="progress progress-striped active" 
                          id="artistsProgressbar" 
-                         ng-hide="(progressCount == 0 || progressCount == artists.length)">
+                         ng-hide="(progressCount == 0 || progressCount == artists.length)" ng-cloak>
                         <div class="progress-bar"  
                              role="progressbar" 
                              aria-valuenow="{{progressCount}}" 
@@ -56,7 +55,7 @@
                         </div>
                     </div>
                     
-                    <div ng-hide="(artists.length == 0)">
+                    <div ng-hide="(artists.length == 0)" ng-cloak>
                         <h5>Найдено концертов: <b>{{events.length}}</b></h5>
                         <div class="media" ng-repeat="event in events|orderBy:'start.date'">
                             <a class="pull-left" href="{{event.uri}}" target="_blank">
@@ -76,19 +75,27 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="panel panel-default hidden" ng-cloak>
+                        <div id="preview" class="panel-body small pre-scrollable"></div>
+                    </div>
                     
-                    <div class="panel panel-default hidden">
+
+                    <div class="panel panel-default hidden" ng-cloak>
                         <div id="log" class="panel-body small pre-scrollable"></div>
                     </div>
+                    
                 </div>
             </div>
         </div> <!-- container -->
   
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-cookies.min.js"></script>
+        <script src="resources/angular/angularLocalStorage.js" type="text/javascript"></script>
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
         <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-        <script src="//vk.com/js/api/xd_connection.js?2"  type="text/javascript"></script>
+        <script src="//vk.com/js/api/xd_connection.js?2" type="text/javascript"></script>
         <script src="javascript/global.js" type="text/javascript"></script>
         <script src="javascript/songkick.js" type="text/javascript"></script>
         <script src="javascript/vtoure.js" type="text/javascript"></script>
