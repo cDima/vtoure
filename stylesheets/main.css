@@ -1,0 +1,51 @@
+
+/* starting animations */
+.ng-enter {
+  /*-webkit-transition: 1s;
+  transition: 1s;
+  
+    opacity:0;*/
+}
+
+/* destination animations */
+.ng-enter-active {
+}
+
+/* starting animations */
+.ng-leave {
+  
+  
+}
+
+/* destination animations */
+.ng-leave-active {
+  
+}
+
+/* starting animations */
+.ng-hide-add{
+    -webkit-transition: 1s;
+    transition: 1s;
+  
+    opacity:1; /* visible */
+}
+/* destination animations */
+.ng-hide-add-active	 {
+   opacity:0; /* transparent */
+}
+
+/* 
+.ng-hide-remove{
+    -webkit-transition: 1s;
+    transition: 1s;
+  
+    opacity:0;
+}
+.ng-hide-remove-active {
+   opacity:1;
+}*/
+
+.inputtown {
+     display: inline; 
+     width: auto;
+}

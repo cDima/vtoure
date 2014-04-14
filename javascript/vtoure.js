@@ -4,10 +4,9 @@
 
     var permissionsGranted = false;
     var artists = [];
+    var person = null;
     var permissionsAlert = $("#permissionsAlert");
-    var personGreeting = $("#personGreeting");
-    personGreeting.hide();
-
+    
     $('#audiopermissions').click(function () { requestPermissions(); return false; });
 
     VK.init(function () {
@@ -25,24 +24,24 @@
     function getPersonalGreeting() {
         VK.api("users.get", { fields: "city, country,photo_50,can_see_audio,counters" }, function (data) {
             // Действия с полученными данными 
-            //debugger;
-            var id = data.response[0].id; // 1
-            var firstName = data.response[0].first_name; // "Дмитрий"
-            var lastName = data.response[0].last_name; // "Садаков"
-            var audiosOK = data.response[0].can_see_audio; // 1 // i can see bass lol
-            var photo = data.response[0].photo_50; //  "http://cs9482.vk.me/v9482635/202d/dn-hQPBWYuQ.jpg"
-            var cityName = data.response[0].city.title; // "New York City"
-            var country = data.response[0].country.title; // "США"
-            var audios = data.response[0].counters.audios; // 512
-
-            $("#userimg").attr("src", photo);
-            $("#personname").text(firstName + " " + lastName);
-            //$("#city").text(cityName + ", " + country);
-            $("#audionum").text(audios);
-            personGreeting.show();
+            person = data.response[0];
+            var id = person.id; // 1
+            var firstName = person.first_name; // "Дмитрий"
+            var lastName = person.last_name; // "Садаков"
+            var audiosOK = person.can_see_audio; // 1 // i can see bass lol
+            var photo = person.photo_50; //  "http://cs9482.vk.me/v9482635/202d/dn-hQPBWYuQ.jpg"
+            var cityName = person.city.title; // "New York City"
+            var country = person.country.title; // "США"
+            var audios = person.counters.audios; // 512
 
             // analytic tracking
             event("Person", "Entered", firstName + " " + lastName + " (" + id + ")", audios, true);
+            //callback(person);
+
+            var scope = angular.element($("#vtoureApp")).scope();
+            scope.$apply(function () {
+                scope.person = person; // scan all artists.
+            });
         });
     }
 
@@ -62,9 +61,12 @@
 
             artists = [];
             $.each(tracks, function (i, track) {
+
+                var easierName = track.artist.trim().toLowerCase().replace("the ", "");
+
                 var artist = {
                     displayName: track.artist,
-                    name: track.artist.trim().toLowerCase().replace("the ", ""),
+                    name: easierName,
                     hitcount: 1,
                     events: [],
                     queriedEvents: false
@@ -98,6 +100,7 @@
             // at this point we have all the artists from vk;
             // push to angular's model.
             var scope = angular.element($("#vtoureApp")).scope();
+            debugger;
             scope.$apply(function () {
                 scope.newArtists(artists); // scan all artists.
             });

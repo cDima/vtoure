@@ -31,3 +31,6 @@ function trackTiming(category, variable, time, opt_label, opt_sample) {
     }
 };
 
+function getLocation(data) {
+    window.ip = data;
+}
