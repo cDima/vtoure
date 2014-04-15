@@ -2,7 +2,7 @@
 // global functions
 
 function resizeVKHeight() {
-    var height = $('#vkframe').height();
+    var height = $('body').height();
     var width = 600;//$('#vkframe').width();
     VK.callMethod('resizeWindow', width, height);
 }
