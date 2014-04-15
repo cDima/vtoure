@@ -40,7 +40,7 @@
 
             var scope = angular.element($("#vtoureApp")).scope();
             scope.$apply(function () {
-                scope.person = person; // scan all artists.
+                scope.person = person; // show user greeting
             });
         });
     }

@@ -31,25 +31,21 @@
 
         $scope.newArtists = function (incomingArtists) {
         
-            // on debug use first 50 artists only:
-            //incomingArtists = incomingArtists.slice(0, 50);
-
             this.artists = this.artists.concat(incomingArtists);
             log('incomingArtists:' + this.artists.length);
 
             $scope.startTime = new Date().getTime();
 
-            //populateConcerts();
             $scope.onChangeLocation();
         }
 
         $scope.onChangeLocation = function () {
-            window.songkick.getLocation($scope.locationName, function (data) {
+            window.songkick.getLocation($scope.locationName, function(data) {
                 debugger;
                 if (data.resultsPage.status == "ok") {
                     var loc = data.resultsPage.results.location[0];
                     var metroId = loc.metroArea.id;
-                    
+
                     if ($scope.location.metroId !== undefined && $scope.location.metroId == metroId) return; // already in same location
 
                     var location = {
@@ -64,33 +60,16 @@
 
                     // rescan
                     $scope.events = [];
-                    $scope.artists.forEach(function (artist) {
+                    $scope.artists.forEach(function(artist) {
                         artist.queriedEvents = false;
                     });
-                    populateConcerts(); 
+                    populateConcerts();
                 } else {
                     error('geocode was not successful for the following reason: ' + data.resultsPage.status);
                 }
-            }, function (status) {
-                    log('geocode was not successful for the following reason: ' + status);
-                });
-            /*
-            geocoder.geocode({ 'address': $scope.locationName }, function (results, status) {
-                if (status == google.maps.GeocoderStatus.OK && results.length > 0) {
-                    debugger;
-                    //map.setCenter(results[0].geometry.location);
-                    var location = {
-                        lat: results[0].geometry.location.k,
-                        lon: results[0].geometry.location.A,
-                        name: results[0].formatted_address
-                    };
-                    $scope.locations.push(location);
-                    $scope.location = location;
-
-                } else {
-                    log('Geocode was not successful for the following reason: ' + status);
-                }
-            });*/
+            }, function(status) {
+                log('geocode was not successful for the following reason: ' + status);
+            });
         }
 
         function populateConcerts() {
@@ -99,9 +78,9 @@
             log('progressCount:' + $scope.progressCount);
 
             if (unqueriedArtists.length != 0) {
-                //var deferred = $q.defer();
+                
                 var nextArtists = unqueriedArtists.slice(0, 5);
-                //var stepStart = new Date().getTime();
+                
                 nextArtists.forEach(function (artist) {
                     getConcerts(artist);
                 });

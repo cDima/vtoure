@@ -12,18 +12,18 @@
     </head>
 
     <body ng-controller="vtoureCtrl" id="vtoureApp">
-        <img src="photoshop/logo.png" alt="logo vteme" width="600" height="100" />
+        <img src="photoshop/logo.png" alt="logo vteme" />
         <div class="container-fluid mainborder" id="vkframe">
             <div class="row">
                 <div class="col-md-12">
                     
-                    <div class="panel panel-default animate-show" ng-hide="person.first_name === undefined" ng-cloak>
-                        <div class="panel-body">
+                    <div class="animate-show" ng-hide="person.first_name === undefined" ng-cloak>
+                        <div class="">
                             <img src="" ng-src="{{person.photo_50}}" class="img-rounded  pull-left" style="margin-right: 10px">
-                            Добропожаловать, <i>{{ person.first_name +  " " + person.last_name }}</i>.<br/>
-                            <small>Обнаружено <b>{{ person.counters.audios }}</b> звукозаписей.</small>
+                            <small>
+                                <i>{{ person.first_name +  " " + person.last_name }}</i>, у вас найдено <b>{{ person.counters.audios }}</b> звукозаписей.
+                            </small>
                             <!--<small>Из <b>{{ person.city.title }}, {{ person.country.title }}</b>.</small>-->
-                            <!-- full map width 550 -->
                         </div>
                     </div>
                     
@@ -35,6 +35,7 @@
                         <p>
                             <span class="small"><span class="glyphicon glyphicon-map-marker"></span> Поиск концертов в <b>{{location.name}}</b></span>
                         </p>
+                        <br/>
                         <p>
                             <span class="small">Искать в другом месте: </span>
                             <input type="text" class="form-control input-sm inputtown" placeholder="Нью Йорк" ng-model="locationName" />
@@ -73,7 +74,7 @@
                     
 
                     <div class="well well-sm" id="artists-ng" ng-hide="(artists.length == 0)" ng-cloak>
-                        
+                        <small>Выступающие исполнители:</small><br/>
                         <span ng-repeat="artist in artists" ng-hide="(artist.queriedEvents && artist.events.length == 0)">
                             <span class="label" 
                                   ng-class="{'label-primary': (artist.queriedEvents && artist.events.length > 0), 'label-default': (artist.queriedEvents && artist.events.length == 0), 'label-info': (!artist.queriedEvents)}">
@@ -87,13 +88,14 @@
                         <h5>Найдено концертов: <b>{{events.length}}</b></h5>
                         <div class="media" ng-repeat="event in events|orderBy:'start.date'">
                             <a class="pull-left" href="{{event.uri}}" target="_blank">
-                                <img 
-                                    id="concertimg" 
-                                    class="img-rounded media-object" 
-                                    ng-src="https://ssl.sk-static.com/images/media/profile_images/venues/{{event.venue.id}}/col1" 
-                                    ng-onerror="this.src='https://ssl.sk-static.com/images/media/profile_images/artists/{{event.venue.id}}/col1';"
-                                    src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIj48L3JlY3Q+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+" 
-                                    style="width: 64px; height: 64px;margin-right: 10px; max-height: 64px; max-width:64px;" />
+                                <div style="background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIj48L3JlY3Q+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+); width: 64px; height: 64px;margin-right: 10px; max-height: 64px; max-width:64px;"  >
+                                    <img 
+                                        id="concertimg" 
+                                        class="img-rounded media-object" 
+                                        ng-src="https://ssl.sk-static.com/images/media/profile_images/venues/{{event.venue.id}}/col1" 
+                                        ng-onerror="this.src='https://ssl.sk-static.com/images/media/profile_images/artists/{{event.venue.id}}/col1';"    
+                                        style="width: 64px; height: 64px;margin-right: 10px; max-height: 64px; max-width:64px;" />
+                                </div>
                             </a>
                             <div class="media-body">
                                 <h4 class="media-heading">{{event.foundByArtist.displayName}}</h4>
@@ -108,14 +110,14 @@
                         <div id="preview" class="panel-body small pre-scrollable"></div>
                     </div>
                     
-
-                    <div class="panel panel-default hidden" ng-cloak>
+                    <br />
+                    <div class="panel panel-default" ng-cloak>
+                        <small>Приложение находится в стадии разработки. Если возникнут ошибки, пожалуйста отправьте отдалочную информацию разработчику.</small>
                         <div id="log" class="panel-body small pre-scrollable"></div>
                     </div>
                     
                 </div>
             </div>
-            <br />
         </div> <!-- container -->
         
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
