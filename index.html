@@ -31,6 +31,10 @@
                         </div>
                     </div>
                     
+                    <div class="well well-sm" id="permissionsAlert" ng-hide="window.permissionsGranted"  ng-cloak>
+                        <div class="text-default">Приложению нужен доступ к аудио записям. <button id="audiopermissions" class="btn btn-primary btn-xs">разрешить доступ к аудио</button></div>
+                    </div>
+                    
                     <div>
                         <p>
                             <span class="small"><span class="glyphicon glyphicon-map-marker"></span> Поиск концертов в <b>{{location.name}}</b></span>
@@ -70,9 +74,6 @@
                             <button type="submit" class="btn btn-default btn-sm inputtown" ng-click="onFilterArtist()"><span class="glyphicon glyphicon-map-marker"></span> Искать</button>
                         </p>-->
                             
-                    <div class="well well-sm" id="permissionsAlert" ng-hide="person.firstname === undefined"  ng-cloak>
-                        <div class="text-default">Приложению нужен доступ к аудио записям. <button id="audiopermissions" class="btn btn-primary btn-xs">разрешить доступ к аудио</button></div>
-                    </div>
                     
 
                     <div class="well well-sm" id="artists-ng" ng-hide="(artists.length == 0)" ng-cloak>

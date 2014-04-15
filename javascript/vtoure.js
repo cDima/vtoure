@@ -2,7 +2,7 @@
 
     if (VK === undefined) console.error("Issue finding VK global object");
 
-    var permissionsGranted = false;
+    window.permissionsGranted = false;
     var artists = [];
     var person = null;
     var permissionsAlert = $("#permissionsAlert");
@@ -28,10 +28,10 @@
             var id = person.id; // 1
             var firstName = person.first_name; // "Дмитрий"
             var lastName = person.last_name; // "Садаков"
-            var audiosOK = person.can_see_audio; // 1 // i can see bass lol
-            var photo = person.photo_50; //  "http://cs9482.vk.me/v9482635/202d/dn-hQPBWYuQ.jpg"
-            var cityName = person.city.title; // "New York City"
-            var country = person.country.title; // "США"
+            //var audiosOK = person.can_see_audio; // 1 // i can see bass lol
+            //var photo = person.photo_50; //  "http://cs9482.vk.me/v9482635/202d/dn-hQPBWYuQ.jpg"
+            //var cityName = person.city.title; // "New York City"
+            //var country = person.country.title; // "США"
             var audios = person.counters.audios; // 512
 
             // analytic tracking
@@ -122,11 +122,11 @@
 
         // audio +8
         var neededPermissions = 8;
-        permissionsGranted = (perms & neededPermissions) === neededPermissions;
-        if (!permissionsGranted) {
+        window.permissionsGranted = (perms & neededPermissions) === neededPermissions;
+        if (!window.permissionsGranted) {
             error("needed Permissions are not granted, need " + neededPermissions + " have " + perms);
         }
-        return permissionsGranted;
+        return window.permissionsGranted;
     }
 
     function requestPermissions() {
@@ -137,7 +137,7 @@
     function onSettingsChanged(settings) {
         log("in onSettingsChanged");
         verifyPermissions(settings);
-        permissionsAlert.toggle(!permissionsGranted);
+        permissionsAlert.toggle(!window.permissionsGranted);
         getPersonalGreeting();
         getAudioAuthors();
         event("Person", "SettingsChanged", "Settings Changed", settings, true);
