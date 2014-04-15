@@ -1,4 +1,8 @@
-
+.mainborder {
+    border: 1px solid #B9C2CE;
+    border-top: 0;
+    padding-top: 10px;
+}
 /* starting animations */
 .ng-enter {
   /*-webkit-transition: 1s;
