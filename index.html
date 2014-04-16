@@ -66,35 +66,39 @@
                             
                     
 
-                    <div class="well well-sm" id="artists-ng" ng-hide="(artists.length == 0)" ng-cloak>
-                        <small>Выступающие исполнители (всего {{artists.length}}):</small><br/>
-                        <span ng-repeat="artist in artists" ng-hide="(artist.queriedEvents && artist.events.length == 0)">
-                            <span class="label" 
-                                  ng-class="{'label-primary': (artist.queriedEvents && artist.events.length > 0), 'label-default': (artist.queriedEvents && artist.events.length == 0), 'label-info': (!artist.queriedEvents)}">
-                                {{artist.displayName}} <!-- <span ng-hide="artist.events.length == 0">{{artist.events.length}}</span> -->
+                    <div class="panel panel-info" id="artists-ng" ng-hide="(artists.length == 0)" ng-cloak>
+                        <div class="panel-heading">Выступающие исполнители (всего {{artists.length}})</div>
+                        <div class="panel-body">
+                            <span ng-repeat="artist in artists" ng-hide="(artist.queriedEvents && artist.events.length == 0)">
+                                <span class="label" 
+                                      ng-class="{'label-primary': (artist.queriedEvents && artist.events.length > 0), 'label-default': (artist.queriedEvents && artist.events.length == 0), 'label-info': (!artist.queriedEvents)}">
+                                    {{artist.displayName}} <!-- <span ng-hide="artist.events.length == 0">{{artist.events.length}}</span> -->
+                                </span>
+                                &nbsp; <!-- space formatting -->
                             </span>
-                            &nbsp; <!-- space formatting -->
-                        </span>
+                        </div>
                     </div>
                                         
-                    <div ng-hide="(events.length == 0)" ng-cloak>
-                        <h5>Найдено концертов: <b>{{events.length}}</b></h5>
-                        <div class="media" ng-repeat="event in events|orderBy:'start.date'">
-                            <a class="pull-left" href="{{event.uri}}" target="_blank">
-                                <div style="background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIj48L3JlY3Q+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+); width: 64px; height: 64px;margin-right: 10px; max-height: 64px; max-width:64px;"  >
-                                    <img 
-                                        id="concertimg" 
-                                        class="img-rounded media-object" 
-                                        ng-src="https://ssl.sk-static.com/images/media/profile_images/venues/{{event.venue.id}}/col1" 
-                                        ng-onerror="this.src='https://ssl.sk-static.com/images/media/profile_images/artists/{{event.venue.id}}/col1';"    
-                                        style="width: 64px; height: 64px;margin-right: 10px; max-height: 64px; max-width:64px;" />
+                    <div class="panel panel-primary"  ng-hide="(events.length == 0)" ng-cloak>
+                        <div class="panel-heading">Найдено концертов <b>{{events.length}}</b></div>
+                        <div class="panel-body">
+                            <div class="media" ng-repeat="event in events|orderBy:'start.date'">
+                                <a class="pull-left" href="{{event.uri}}" target="_blank">
+                                    <div style="background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIj48L3JlY3Q+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+); width: 64px; height: 64px;margin-right: 10px; max-height: 64px; max-width:64px;"  >
+                                        <img 
+                                            id="concertimg" 
+                                            class="img-rounded media-object" 
+                                            ng-src="https://ssl.sk-static.com/images/media/profile_images/venues/{{event.venue.id}}/col1" 
+                                            ng-onerror="this.src='https://ssl.sk-static.com/images/media/profile_images/artists/{{event.venue.id}}/col1';"    
+                                            style="width: 64px; height: 64px;margin-right: 10px; max-height: 64px; max-width:64px;" />
+                                    </div>
+                                </a>
+                                <div class="media-body">
+                                    <h4 class="media-heading">{{event.foundByArtist.displayName}}</h4>
+                                    <b>{{event.start.date | date:'MMM d, y'}} {{event.start.time | date:' h a'}}</b>
+                                    <a href="{{event.uri}}" target="_blank">{{event.displayName}}</a> @ 
+                                    <a href="{{event.venue.uri}}" target="_blank">{{event.venue.displayName}}</a> {{event.location.city}}
                                 </div>
-                            </a>
-                            <div class="media-body">
-                                <h4 class="media-heading">{{event.foundByArtist.displayName}}</h4>
-                                <b>{{event.start.date | date:'MMM d, y'}} {{event.start.time | date:' h a'}}</b>
-                                <a href="{{event.uri}}" target="_blank">{{event.displayName}}</a> @ 
-                                <a href="{{event.venue.uri}}" target="_blank">{{event.venue.displayName}}</a> {{event.location.city}}
                             </div>
                         </div>
                     </div>
@@ -105,7 +109,7 @@
                     
                     <br />
                     
-                    <div class="panel panel-info"  ng-cloak>
+                    <div class="panel panel-default"  ng-cloak>
                       <div class="panel-heading">Debug log</div>
                       <div class="panel-body">
                         <small>Приложение находится в стадии разработки, ниже лог приложения.</small>
