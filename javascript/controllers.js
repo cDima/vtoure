@@ -71,7 +71,7 @@
                         var loc = data.resultsPage.results.location[0];
                         var metroId = loc.metroArea.id;
 
-                        if ($scope.location.metroId !== undefined && $scope.location.metroId == metroId) return; // already in same location
+                        //if ($scope.location.metroId !== undefined && $scope.location.metroId == metroId) return; // already in same location
 
                         var location = {
                             lat: loc.metroArea.lat,
