@@ -1,8 +1,32 @@
-.mainborder {
+.mapborder
+{
     border: 1px solid #B9C2CE;
     border-top: 0;
+}
+
+.namebox {
+    max-width: 300px;
+    overflow: hidden;
+    max-height: 20px;
+}
+
+.paddingtop {
     padding-top: 10px;
 }
+
+.topprofile
+{
+    color: white;
+    padding-right: 15px;
+    padding-top: 10px;
+    width: 600px;
+    text-align: left;
+    float: right;
+    /* max-width: 100px; */
+    overflow: hidden;
+    padding-left: 250px;
+}
+
 /* starting animations */
 .ng-enter {
   /*-webkit-transition: 1s;

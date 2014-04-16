@@ -22,7 +22,15 @@
                 jsonp: 'jsoncallback'
             }).fail(onError).done(onSuccess);
         },
-
+        getAllLocationEvents: function (metroId, onSuccess, onError) {
+            debugger;
+            $.ajax({
+                url: "http://api.songkick.com/api/3.0/metro_areas/" + metroId + "/calendar.json",
+                data: { apikey: this.apikey },
+                dataType: "jsonp",
+                jsonp: 'jsoncallback'
+            }).fail(onError).done(onSuccess);
+        },
         getLocation: function (cityname, onSuccess, onError) {
             debugger;
             var data = { apikey: this.apikey };

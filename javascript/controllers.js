@@ -20,15 +20,15 @@
         });
         $scope.location = $scope.locations[0];// set primary
         
-        //var geocoder = new google.maps.Geocoder();
+        var geocoder = new google.maps.Geocoder();
         $scope.locationName = $scope.location.name;
-        //$scope.onChangeLocation($scope.locationName);
+        $scope.locationNameValid = true;
 
         $scope.progressCount = 0;
         $scope.eventsFound = 0;
         $scope.startTime = 0;
         $scope.timeComplete = 0;
-
+        
         $scope.newArtists = function (incomingArtists) {
         
             this.artists = this.artists.concat(incomingArtists);
@@ -39,40 +39,69 @@
             $scope.onChangeLocation();
         }
 
+
+        $scope.getAllConcertsArea = function () {
+            if ($scope.location.metroId !== undefined) {
+                window.songkick.getAllLocationEvents($scope.location.metroId, function(response) {
+                    debugger;
+                    $scope.events = $scope.events.concat(response.resultsPage.results.event);
+                    $scope.$apply(); // update angular for some reason
+                    resizeVKHeight();
+                }, onerror);
+            }
+        };
+
+
         $scope.onChangeLocation = function () {
-            window.songkick.getLocation($scope.locationName, function(data) {
-                debugger;
-                if (data.resultsPage.status == "ok") {
-                    var loc = data.resultsPage.results.location[0];
-                    var metroId = loc.metroArea.id;
-
-                    if ($scope.location.metroId !== undefined && $scope.location.metroId == metroId) return; // already in same location
-
-                    var location = {
-                        lat: loc.metroArea.lat,
-                        lon: loc.metroArea.lng,
-                        name: loc.metroArea.displayName + ", " + loc.metroArea.country.displayName,
-                        metroId: loc.metroArea.id
-                    };
-
-                    $scope.locations.push(location);
-                    $scope.location = location;
-
-                    // rescan
-                    $scope.events = [];
-                    $scope.artists.forEach(function(artist) {
-                        artist.queriedEvents = false;
-                    });
-                    populateConcerts();
+            geocoder.geocode({ 'address': $scope.locationName }, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK && results.length > 0) {
+                    debugger;
+                    searchSongkickByName(results[0].formatted_address); // with the help of google, off we go
+                    log("geolocation finished, lat,lon:" + results[0].geometry.location.k + "," + results[0].geometry.location.A + ";name=" + results[0].formatted_address);
                 } else {
-                    error('geocode was not successful for the following reason: ' + data.resultsPage.status);
+                    $scope.locationNameValid = false;
                 }
-            }, function(status) {
-                log('geocode was not successful for the following reason: ' + status);
             });
+
+            function searchSongkickByName(locationName) {
+                window.songkick.getLocation(locationName, function (data) {
+                    debugger;
+                    if (data.resultsPage.status == "ok" && data.resultsPage.totalEntries > 0) {
+                        $scope.locationNameValid = true;
+                        var loc = data.resultsPage.results.location[0];
+                        var metroId = loc.metroArea.id;
+
+                        if ($scope.location.metroId !== undefined && $scope.location.metroId == metroId) return; // already in same location
+
+                        var location = {
+                            lat: loc.metroArea.lat,
+                            lon: loc.metroArea.lng,
+                            name: loc.metroArea.displayName + ", " + loc.metroArea.country.displayName,
+                            metroId: loc.metroArea.id
+                        };
+
+                        $scope.locations.push(location);
+                        $scope.location = location;
+
+                        // rescan
+                        $scope.events = [];
+                        $scope.artists.forEach(function (artist) {
+                            artist.queriedEvents = false;
+                        });
+                        populateConcerts();
+                    } else {
+                        $scope.locationNameValid = false;
+                        error('geocode was not successful for the following reason: ' + data.resultsPage.status);
+                    }
+                }, function (status) {
+                    log('geocode was not successful for the following reason: ' + status);
+                    $scope.locationNameValid = false;
+                });
+            }
         }
 
         function populateConcerts() {
+
             var unqueriedArtists = $scope.artists.filter(function (artist) { return !artist.queriedEvents; });
             $scope.progressCount = $scope.artists.length - unqueriedArtists.length;
             log('progressCount:' + $scope.progressCount);
@@ -93,6 +122,11 @@
                 event("Library", "Concerts available", "Concerts available", $scope.eventsFound, true);
                 debugger;
                 $scope.$apply(); // update angular for some reason
+
+                 //if no events where found, return all concerts
+                if ($scope.events.length == 0) {
+                    $scope.getAllConcertsArea();
+                }   
             }
         };
 
@@ -145,7 +179,6 @@
                     $scope.events.push(e); // add to global collection of events
                 });
 
-
                 if ($scope.progressCount !== 0) $scope.$apply(); // update angular for some reason
 
                 resizeVKHeight();
@@ -154,7 +187,6 @@
             }
 
             return deferred.promise;
-        }
-    }]);
-
+        };
+    }]); // end controller
 })(window, window.angular);

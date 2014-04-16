@@ -12,38 +12,31 @@
     </head>
 
     <body ng-controller="vtoureCtrl" id="vtoureApp">
-        <img src="photoshop/logo.png" alt="logo vteme" />
-        <div class="container-fluid mainborder" id="vkframe">
+        <div style="background-image: url(photoshop/logo.png); width: 600px; height: 70px;">
+            <div class="topprofile animate-show" ng-hide="person.first_name === undefined" ng-cloak>
+                <img src="" ng-src="{{person.photo_50}}" class="img-rounded  pull-left" style="margin-right: 10px">
+                <div class="namebox"><small>
+                         <b>{{ person.first_name +  " " + person.last_name }}</b>
+                         <!--, найдено <b>{{ person.counters.audios }}</b> звукозаписей.-->
+                     </small>
+                </div>
+                <div class="small"><span class="glyphicon glyphicon-map-marker"></span> Поиск концертов в <b>{{location.name}}</b></div>
+            </div>
+        </div>
+        
+        <img class="mainborder" src="http://maps.googleapis.com/maps/api/staticmap?center={{location.lat}},{{location.lon}}&zoom=10&size=598x180&maptype=roadmap&sensor=false&style=hue:0x007fff|saturation:-56&markers=icon:http://cdima.github.io/vtoure/photoshop/icon_1832_20px.png%7C{{location.lat}},{{location.lon}}"  />
+        <div class="container-fluid mainborder paddingtop">
             <div class="row">
                 <div class="col-md-12">
-                    
-                    <div class="animate-show" ng-hide="person.first_name === undefined" ng-cloak>
-                        <div class="">
-                            <img src="" ng-src="{{person.photo_50}}" class="img-rounded  pull-left" style="margin-right: 10px">
-                            <small>
-                                <i>{{ person.first_name +  " " + person.last_name }}</i>, у вас найдено <b>{{ person.counters.audios }}</b> звукозаписей.
-                            </small>
-                            <!--<small>Из <b>{{ person.city.title }}, {{ person.country.title }}</b>.</small>-->
-                        </div>
-                    </div>
-                    
                     <div class="well well-sm" id="permissionsAlert" ng-hide="window.permissionsGranted"  ng-cloak>
                         <div class="text-default">Приложению нужен доступ к аудио записям. <button id="audiopermissions" class="btn btn-primary btn-xs">разрешить доступ к аудио</button></div>
                     </div>
-                    
                     <div>
-                        <p>
-                            <span class="small"><span class="glyphicon glyphicon-map-marker"></span> Поиск концертов в <b>{{location.name}}</b></span>
-                        </p>
-                        <br/>
-                        <p>
-                            <span class="small">Искать в другом месте: </span>
-                            <input type="text" class="form-control input-sm inputtown" placeholder="Нью Йорк" ng-model="locationName" />
+                        <p class="form-group"  ng-class="{'has-error': !locationNameValid}" >
+                            <span class="small">Поиск заточен под крупные города, искать в другом месте:</span>
+                            <input type="text" class="form-control input-sm inputtown"placeholder="Нью Йорк" ng-model="locationName" />
                             <button type="submit" class="btn btn-default btn-sm inputtown" ng-click="onChangeLocation()"><span class="glyphicon glyphicon-map-marker"></span> Искать</button>
                         </p>
-                        <img src="http://maps.googleapis.com/maps/api/staticmap?center={{location.lat}},{{location.lon}}&zoom=10&size=570x180&maptype=roadmap&sensor=false&style=hue:0x007fff|saturation:-56" 
-                             class="img-rounded"/>
-                        <br/><br/>
                     </div>
                     
                     <div class="progress progress-striped active" 
@@ -74,7 +67,7 @@
                     
 
                     <div class="well well-sm" id="artists-ng" ng-hide="(artists.length == 0)" ng-cloak>
-                        <small>Выступающие исполнители:</small><br/>
+                        <small>Выступающие исполнители (всего {{artists.length}}):</small><br/>
                         <span ng-repeat="artist in artists" ng-hide="(artist.queriedEvents && artist.events.length == 0)">
                             <span class="label" 
                                   ng-class="{'label-primary': (artist.queriedEvents && artist.events.length > 0), 'label-default': (artist.queriedEvents && artist.events.length == 0), 'label-info': (!artist.queriedEvents)}">
@@ -84,7 +77,7 @@
                         </span>
                     </div>
                                         
-                    <div ng-hide="(artists.length == 0)" ng-cloak>
+                    <div ng-hide="(events.length == 0)" ng-cloak>
                         <h5>Найдено концертов: <b>{{events.length}}</b></h5>
                         <div class="media" ng-repeat="event in events|orderBy:'start.date'">
                             <a class="pull-left" href="{{event.uri}}" target="_blank">
@@ -111,11 +104,14 @@
                     </div>
                     
                     <br />
-                    <div class="panel panel-default" ng-cloak>
-                        <small>Приложение находится в стадии разработки. Если возникнут ошибки, пожалуйста отправьте отдалочную информацию разработчику.</small>
-                        <div id="log" class="panel-body small pre-scrollable"></div>
-                    </div>
                     
+                    <div class="panel panel-info"  ng-cloak>
+                      <div class="panel-heading">Debug log</div>
+                      <div class="panel-body">
+                        <small>Приложение находится в стадии разработки, ниже лог приложения.</small>
+                        <div id="log" class="panel-body small pre-scrollable"></div>
+                      </div>
+                    </div>
                 </div>
             </div>
         </div> <!-- container -->
