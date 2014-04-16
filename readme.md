@@ -3,4 +3,4 @@
 
 Находит концерты по автором аудиозаписей в вконтакте.
 
-![vtoure app on vk](/pr/screenshot1.png "vtoure app on vk")
+![vtoure app on vk](/pr/beta-v2.png "vtoure app on vk")
