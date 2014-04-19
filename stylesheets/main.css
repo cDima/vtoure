@@ -1,3 +1,51 @@
+.emoji {
+width: 16px;
+height: 16px;
+margin: 0px 0px;
+border: none;
+vertical-align: top;
+}
+
+.inputtown {
+     display: inline; 
+     width: auto;
+}
+.has-feedback .form-control {
+     padding-right: 10px !important;
+ }
+.input-location {
+    /*margin-top: -33px;
+    margin-left: 370px;*/
+}
+.rounded {
+    border-radius: 20px;
+}
+.rounded-search span {
+    position: absolute;
+    left: 6px;
+    top: 7px;
+    color: #357ebd;
+}
+.rounded-search input
+{
+    border-right: 0;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 20px;
+    padding-left: 24px;
+    border-color:#357ebd; 
+}
+
+.rounded-search button
+{
+    border-left: 0;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 00px;
+}
+
 .mapborder
 {
     border: 1px solid #B9C2CE;
@@ -19,7 +67,7 @@
     color: white;
     padding-right: 15px;
     padding-top: 10px;
-    width: 600px;
+    max-width: 600px;
     text-align: left;
     float: right;
     /* max-width: 100px; */
@@ -29,14 +77,15 @@
 
 /* starting animations */
 .ng-enter {
-  /*-webkit-transition: 1s;
+  -webkit-transition: 1s;
   transition: 1s;
   
-    opacity:0;*/
+    opacity:0;
 }
 
 /* destination animations */
 .ng-enter-active {
+    opacity:1;
 }
 
 /* starting animations */
@@ -62,7 +111,7 @@
    opacity:0; /* transparent */
 }
 
-/* 
+
 .ng-hide-remove{
     -webkit-transition: 1s;
     transition: 1s;
@@ -71,9 +120,4 @@
 }
 .ng-hide-remove-active {
    opacity:1;
-}*/
-
-.inputtown {
-     display: inline; 
-     width: auto;
 }

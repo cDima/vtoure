@@ -41,3 +41,12 @@ var trackOutboundLink = function (url) {
 function getLocation(data) {
     window.ip = data;
 }
+
+String.prototype.capitalize = function () {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+}
+
+function lookup(array, prop, value) {
+    for (var i = 0, len = array.length; i < len; i++)
+        if (array[i][prop] === value) return array[i];
+}

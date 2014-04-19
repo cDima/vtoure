@@ -10,71 +10,116 @@
 
     vtoureApp.controller('vtoureCtrl', [
         '$scope', '$q', 'storage', function($scope, $q, storage) {
-            $scope.artists = [];
-            $scope.person = {};
-            $scope.events = [];
-
-            $scope.locations = [];
-            $scope.locations.push({
-                lat: window.ip.lat,
-                lon: window.ip.lon,
-                name: window.ip.regionName + ", " + window.ip.countryCode
-            });
-            event("Location", "IpApi", window.ip.regionName + ", " + window.ip.countryCode, window.ip.query, true);
-
-            $scope.location = $scope.locations[0]; // set primary
-
-            var geocoder = new google.maps.Geocoder();
-            $scope.locationName = $scope.location.name;
-            $scope.locationNameValid = true;
-
-            $scope.songkickHits = 0;
-            $scope.songkickCurrentRequests = 0;
-            $scope.cacheHits = 0;
-
-            $scope.progressCount = 0;
-            $scope.eventsFound = 0;
-            $scope.startTime = 0;
-            $scope.timeComplete = 0;
-
-            $scope.newArtists = function(incomingArtists) {
-
-                this.artists = this.artists.concat(incomingArtists);
-                log('incomingArtists:' + this.artists.length);
-
-                $scope.startTime = new Date().getTime();
-
-                $scope.onChangeLocation();
-            }
-
-
-            $scope.getAllConcertsArea = function() {
-                if ($scope.location.metroId !== undefined) {
-                    window.songkick.getAllLocationEvents($scope.location.metroId, function(response) {
-                        debugger;
-                        $scope.events = $scope.events.concat(response.resultsPage.results.event);
-                        $scope.$apply(); // update angular for some reason
-                        resizeVKHeight();
-                    }, onerror);
-                }
-            };
-
-
-            $scope.onChangeLocation = function() {
-                geocoder.geocode({ 'address': $scope.locationName }, function(results, status) {
-                    if (status == google.maps.GeocoderStatus.OK && results.length > 0) {
-                        debugger;
-                        searchSongkickByName(results[0].formatted_address); // with the help of google, off we go
-                        log("google geolocation finished, lat,lon:" + results[0].geometry.location.k + "," + results[0].geometry.location.A + ";name=" + results[0].formatted_address);
-                        event("Location", "GoogleSearch", results[0].formatted_address, results[0].geometry.location.k + "," + results[0].geometry.location.A, true);
-                    } else {
-                        $scope.locationNameValid = false;
+                $scope.artists = [];
+                $scope.person = {};
+                $scope.events = [];
+                $scope.artistFilter = '';
+                // add default locations
+                $scope.locations = [
+                    {
+                        glName: "New York, NY, USA",
+                        lat: 40.714269,
+                        lon: -74.005973,
+                        metroId: 7644,
+                        name: "Нью Йорк",
+                        skName: "New York, US"
+                    }, {
+                        glName: "London, UK",
+                        lat: 51.5078,
+                        lon: -0.128,
+                        metroId: 24426,
+                        name: "Лондон",
+                        skName: "London, UK"
+                    }, {
+                        glName: "Moscow, Russia",
+                        lat: 55.7522,
+                        lon: 37.6156,
+                        metroId: 32051,
+                        name: "Москва",
+                        skName: "Moscow, Russian Federation"
                     }
-                });
+                ];
+                $scope.location = $scope.locations[0]; // set primary location
 
-                function searchSongkickByName(locationName) {
-                    window.songkick.getLocation(locationName, function(data) {
-                        debugger;
+
+                event("Location", "IpApi", window.ip.query, window.ip.regionName + ", " + window.ip.countryCode + " [" + window.ip.lat, window.ip.lon + "]", true);
+
+                $scope.locationName = window.ip.regionName + ", " + window.ip.countryCode;
+                $scope.locationNameValid = true;
+
+                $scope.songkickHits = 0;
+                $scope.songkickCurrentRequests = 0;
+                $scope.cacheHits = 0;
+
+                $scope.progressCount = 0;
+                $scope.eventsFound = 0;
+                $scope.startTime = 0;
+                $scope.timeComplete = 0;
+
+                $scope.newArtists = function(incomingArtists) {
+
+                    this.artists = this.artists.concat(incomingArtists);
+                    log('incomingArtists:' + this.artists.length);
+
+                    $scope.startTime = new Date().getTime();
+
+                    $scope.onChangeLocation();
+                }
+
+
+                $scope.getAllConcertsArea = function() {
+                    if ($scope.location.metroId !== undefined) {
+                        window.songkick.getAllLocationEvents($scope.location.metroId, function(response) {
+                            debugger;
+                            $scope.events = $scope.events.concat(response.resultsPage.results.event);
+                            $scope.$apply(); // update angular for some reason
+                            resizeVKHeight();
+                        }, onerror);
+                    }
+                };
+
+                $scope.changeLocation = function (cityName) {
+                    debugger;
+                    $scope.locationName = cityName;
+                    $scope.onChangeLocation();
+                    return false;
+                };
+
+                $scope.filterByArtist = function(artistName) {
+                    debugger;
+                    $scope.artistFilter = artistName;
+                    $scope.$apply();
+                    resizeVKHeight();
+                };
+
+                $scope.artistsInTourCount = function () {
+                    var count = 0;
+                    angular.forEach($scope.artists, function (artist) {
+                        count += (artist.queriedEvents && artist.events.length > 0) ? 1 : 0;
+                    });
+                    return count;
+                }
+            
+
+                $scope.onChangeLocation = function () {
+                var existingLocation = lookup($scope.locations, 'name', $scope.locationName);
+                //if (typeof existingLocation === 'undefined') {
+                var geocoder = new google.maps.Geocoder();
+                geocoder.geocode({ 'address': $scope.locationName }, function(results, status) {
+                        if (status == google.maps.GeocoderStatus.OK && results.length > 0) {
+                            searchSongkickByName($scope.locationName, results[0].formatted_address); // with the help of google, off we go
+                            log("google geolocation finished, lat,lon:" + results[0].geometry.location.k + "," + results[0].geometry.location.A + ";name=" + results[0].formatted_address);
+                            event("Location", "GoogleSearch", results[0].formatted_address, results[0].geometry.location.k + "," + results[0].geometry.location.A, true);
+
+                        } else {
+                            $scope.locationNameValid = false;
+                        }
+                    }
+                );
+                //}
+
+                function searchSongkickByName(locationName, glName) {
+                    window.songkick.getLocation(glName, function (data) {
                         if (data.resultsPage.status == "ok" && data.resultsPage.totalEntries > 0) {
                             $scope.locationNameValid = true;
                             var loc = data.resultsPage.results.location[0];
@@ -83,12 +128,19 @@
                             var location = {
                                 lat: loc.metroArea.lat,
                                 lon: loc.metroArea.lng,
-                                name: loc.metroArea.displayName + ", " + loc.metroArea.country.displayName,
+                                name: locationName.capitalize(),
+                                glName: glName,
+                                skName: loc.metroArea.displayName + ", " + loc.metroArea.country.displayName,
                                 metroId: loc.metroArea.id
                             };
 
-                            $scope.locations.push(location);
-                            $scope.location = location;
+                            var existingLocation = lookup($scope.locations, 'metroId', metroId);
+                            debugger;
+                            if (typeof existingLocation === 'undefined') {
+                                $scope.locations.push(location);
+                                existingLocation = $scope.locations[$scope.locations.length - 1];
+                            } // add to array if new loc
+                            $scope.location = existingLocation;
 
                             event("Location", "SongkickSearch", $scope.location.name, $scope.location.lat + "," + $scope.location.lon, true);
 
@@ -185,7 +237,7 @@
                     $scope.eventsFound += events.length;
 
                     events.forEach(function(e) {
-                        e.foundByArtist = artist; // add artist to event graph
+                        e.artistDisplayName = artist.displayName; // add artist to event graph
                         $scope.events.push(e); // add to global collection of events
                     });
 
