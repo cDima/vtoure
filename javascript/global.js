@@ -7,6 +7,8 @@ function resizeVKHeight() {
     VK.callMethod('resizeWindow', width, height);
 }
 
+setInterval('resizeVKHeight()', 500); //
+
 function log(msg) {
     console.log(msg);
     $("#log").append("<i>" + msg + "</i><br>");
