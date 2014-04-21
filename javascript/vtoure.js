@@ -51,59 +51,61 @@
 
             if (data.error !== undefined) {
                 error(data.error.error_msg);
-                return;
-            }
+            } else {
 
-            var audiocount = data.response.count;
-            var tracks = data.response.items;
+                var audiocount = data.response.count;
+                var tracks = data.response.items;
 
-            event("Person", "AllowedAudioAccess", "Tracks #", audiocount, true);
+                event("Person", "AllowedAudioAccess", "Tracks #", audiocount, true);
 
-            artists = [];
-            $.each(tracks, function (i, track) {
+                artists = [];
+                $.each(tracks, function(i, track) {
 
-                var easierName = track.artist.trim().toLowerCase().replace("the ", "");
+                    var easierName = track.artist.trim().toLowerCase().replace("the ", "");
 
-                var artist = {
-                    displayName: track.artist,
-                    name: easierName,
-                    hitcount: 1,
-                    events: [],
-                    queriedEvents: false
-                };
+                    var artist = {
+                        displayName: track.artist,
+                        name: easierName,
+                        hitcount: 1,
+                        events: [],
+                        queriedEvents: false
+                    };
 
-                var foundArtist = $.grep(artists, function(element) {
-                    return element.name === artist.name;
+                    var foundArtist = $.grep(artists, function(element) {
+                        return element.name === artist.name;
+                    });
+                    if (foundArtist.length === 0) {
+                        artists.push(artist);
+                    } else {
+                        foundArtist[0].hitcount++;
+                    }
                 });
-                if (foundArtist.length === 0) {
-                    artists.push(artist);
-                } else {
-                    foundArtist[0].hitcount++;
+
+                function hitCountSorter(a, b) {
+                    var hitsA = a.hitcount;
+                    var hitsB = b.hitcount;
+                    if (hitsA === hitsB) return sortByName(a.name, b.name);
+                    else return ((hitsA < hitsB) ? -1 : ((hitsA > hitsB) ? 1 : 0));;
                 }
-            });
 
-            function hitCountSorter(a, b) {
-                var hitsA = a.hitcount;
-                var hitsB = b.hitcount;
-                if (hitsA === hitsB) return sortByName(a.name, b.name);
-                else return ((hitsA < hitsB) ? -1 : ((hitsA > hitsB) ? 1 : 0));;
+                function sortByName(a, b) {
+                    return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+                }
+
+                // sort by popularity
+                artists.sort(hitCountSorter);
+                artists.reverse();
+
+                // at this point we have all the artists from vk;
+                // push to angular's model.
             }
 
-            function sortByName(a, b) {
-                return ((a < b) ? -1 : ((a > b) ? 1 : 0));
-            }
-
-            // sort by popularity
-            artists.sort(hitCountSorter);
-            artists.reverse();
-            
-            // at this point we have all the artists from vk;
-            // push to angular's model.
             var scope = angular.element($("#vtoureApp")).scope();
             debugger;
-            scope.$apply(function () {
+            scope.$apply(function() {
                 scope.newArtists(artists); // scan all artists.
             });
+            
         });
     };
     
