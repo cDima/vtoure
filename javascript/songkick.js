@@ -7,7 +7,7 @@
         var apikey = 'moHNsXaKT6XHh7pP';
         var publicMethods = {
             getEvents: function(artist) {
-                return $http.jsonp("http://api.songkick.com/api/3.0/events.json", { location: "clientip", apikey: apikey, artist_name: artist });
+                return $http.jsonp("//api.songkick.com/api/3.0/events.json", { location: "clientip", apikey: apikey, artist_name: artist });
             }
         };
         return publicMethods;
@@ -21,25 +21,31 @@ $(function () {
 
         getEvents: function(artist, displayName, onSuccess, onError) {
             $.ajax({
-                url: "http://api.songkick.com/api/3.0/events.json?",
-                data: { location: "clientip", apikey: this.apikey, artist_name: artist }
+                url: "//api.songkick.com/api/3.0/events.json?",
+                data: { location: "clientip", apikey: this.apikey, artist_name: artist },
+                dataType: "jsonp",
+                jsonp: 'jsoncallback'
             }).fail(onError).done(onSuccess);
         },
         getLocationEvents: function (artist, displayName, /*lat, lon*/ metroId, onSuccess, onError) {
             debugger;
             $.ajax({
-                url: "http://api.songkick.com/api/3.0/events.json?",
+                url: "//api.songkick.com/api/3.0/events.json?",
                 data: {
                     //location: "geo:" + lat + "," + lon, apikey: this.apikey, artist_name: artist },
                     location: "sk:" + metroId, apikey: this.apikey, artist_name: artist
-                }
+                },
+                dataType: "jsonp",
+                jsonp: 'jsoncallback'
             }).fail(onError).done(onSuccess);
         },
         getAllLocationEvents: function (metroId, onSuccess, onError) {
             debugger;
             $.ajax({
-                url: "http://api.songkick.com/api/3.0/metro_areas/" + metroId + "/calendar.json",
-                data: { apikey: this.apikey }
+                url: "//api.songkick.com/api/3.0/metro_areas/" + metroId + "/calendar.json",
+                data: { apikey: this.apikey },
+                dataType: "jsonp",
+                jsonp: 'jsoncallback'
             }).fail(onError).done(onSuccess);
         },
         getLocation: function (cityname, onSuccess, onError) {
@@ -53,8 +59,10 @@ $(function () {
             }
 
             $.ajax({
-                url: "http://api.songkick.com/api/3.0/search/locations.json",
-                data: data
+                url: "//api.songkick.com/api/3.0/search/locations.json",
+                data: data,
+                dataType: "jsonp",
+                jsonp: 'jsoncallback'
             }).fail(onError).done(onSuccess);
         }
     };
