@@ -58,7 +58,11 @@
             $scope.startTime = 0;
             $scope.timeComplete = 0;
 
-            $scope.newArtists = function(incomingArtists) {
+            // ip api should already have answered.
+            //debugger;
+
+            $scope.newArtists = function (incomingArtists) {
+
                 $scope.locationName = window.ip.regionName + ", " + window.ip.countryCode;
                 $scope.locationNameValid = true;
 
