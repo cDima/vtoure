@@ -5,105 +5,110 @@
 (function (window, angular) {
     'use strict';
 
-    var vtoureApp = angular.module('vtoureApp', ['ngAnimate', 'angularLocalStorage']);
+    var vtoureApp = angular.module('vtoureApp', ['backgroundImgDirective','ngAnimate', 'angularLocalStorage']);
 
 
     vtoureApp.controller('vtoureCtrl', [
         '$scope', '$q', 'storage', function($scope, $q, storage) {
-                $scope.artists = [];
-                $scope.person = {};
-                $scope.events = [];
-                $scope.artistFilter = '';
-                // add default locations
-                $scope.locations = [
-                    {
-                        glName: "New York, NY, USA",
-                        lat: 40.714269,
-                        lon: -74.005973,
-                        metroId: 7644,
-                        name: "Нью Йорк",
-                        skName: "New York, US"
-                    }, {
-                        glName: "London, UK",
-                        lat: 51.5078,
-                        lon: -0.128,
-                        metroId: 24426,
-                        name: "Лондон",
-                        skName: "London, UK"
-                    }, {
-                        glName: "Moscow, Russia",
-                        lat: 55.7522,
-                        lon: 37.6156,
-                        metroId: 32051,
-                        name: "Москва",
-                        skName: "Moscow, Russian Federation"
-                    }
-                ];
-                $scope.location = $scope.locations[0]; // set primary location
 
+            //debugger;
+            //var req = songkick.getEvents('the glitch mob');
+            //req.success(function(ye) {
+            //    debugger;
 
-                event("Location", "IpApi", window.ip.query, window.ip.regionName + ", " + window.ip.countryCode + " [" + window.ip.lat, window.ip.lon + "]", true);
+            //});
 
+            $scope.artists = [];
+            $scope.person = {};
+            $scope.events = [];
+            $scope.artistFilter = '';
+            // add default locations
+            $scope.locations = [
+                {
+                    glName: "New York, NY, USA",
+                    lat: 40.714269,
+                    lon: -74.005973,
+                    metroId: 7644,
+                    name: "Нью Йорк",
+                    skName: "New York, US"
+                }, {
+                    glName: "London, UK",
+                    lat: 51.5078,
+                    lon: -0.128,
+                    metroId: 24426,
+                    name: "Лондон",
+                    skName: "London, UK"
+                }, {
+                    glName: "Moscow, Russia",
+                    lat: 55.7522,
+                    lon: 37.6156,
+                    metroId: 32051,
+                    name: "Москва",
+                    skName: "Moscow, Russian Federation"
+                }
+            ];
+            $scope.location = $scope.locations[0]; // set primary location
+
+            $scope.songkickHits = 0;
+            $scope.songkickCurrentRequests = 0;
+            $scope.cacheHits = 0;
+
+            $scope.progressCount = 0;
+            $scope.eventsFound = 0;
+            $scope.startTime = 0;
+            $scope.timeComplete = 0;
+
+            $scope.newArtists = function(incomingArtists) {
                 $scope.locationName = window.ip.regionName + ", " + window.ip.countryCode;
                 $scope.locationNameValid = true;
 
-                $scope.songkickHits = 0;
-                $scope.songkickCurrentRequests = 0;
-                $scope.cacheHits = 0;
+                this.artists = this.artists.concat(incomingArtists);
+                log('incomingArtists:' + this.artists.length);
 
-                $scope.progressCount = 0;
-                $scope.eventsFound = 0;
-                $scope.startTime = 0;
-                $scope.timeComplete = 0;
+                $scope.startTime = new Date().getTime();
 
-                $scope.newArtists = function(incomingArtists) {
+                $scope.onChangeLocation();
+            }
 
-                    this.artists = this.artists.concat(incomingArtists);
-                    log('incomingArtists:' + this.artists.length);
 
-                    $scope.startTime = new Date().getTime();
-
-                    $scope.onChangeLocation();
+            $scope.getAllConcertsArea = function() {
+                if ($scope.location.metroId !== undefined) {
+                    window.songkick.getAllLocationEvents($scope.location.metroId, function(response) {
+                        debugger;
+                        $scope.events = $scope.events.concat(response.resultsPage.results.event);
+                        $scope.$apply(); // update angular for some reason
+                        resizeVKHeight();
+                    }, onerror);
                 }
+            };
 
+            $scope.changeLocation = function(cityName) {
+                debugger;
+                $scope.locationName = cityName;
+                $scope.onChangeLocation();
+                return false;
+            };
 
-                $scope.getAllConcertsArea = function() {
-                    if ($scope.location.metroId !== undefined) {
-                        window.songkick.getAllLocationEvents($scope.location.metroId, function(response) {
-                            debugger;
-                            $scope.events = $scope.events.concat(response.resultsPage.results.event);
-                            $scope.$apply(); // update angular for some reason
-                            resizeVKHeight();
-                        }, onerror);
-                    }
-                };
+            $scope.filterByArtist = function(artistName) {
+                debugger;
+                $scope.artistFilter = artistName;
+                $scope.$apply();
+                resizeVKHeight();
+                // search songkick for the group:
+                //debugger;
+                //getConcerts(artistName);
+            };
 
-                $scope.changeLocation = function (cityName) {
-                    debugger;
-                    $scope.locationName = cityName;
-                    $scope.onChangeLocation();
-                    return false;
-                };
+            $scope.artistsInTourCount = function() {
+                var count = 0;
+                angular.forEach($scope.artists, function(artist) {
+                    count += (artist.queriedEvents && artist.events.length > 0) ? 1 : 0;
+                });
+                return count;
+            }
 
-                $scope.filterByArtist = function(artistName) {
-                    debugger;
-                    $scope.artistFilter = artistName;
-                    $scope.$apply();
-                    resizeVKHeight();
-                };
+            $scope.onChangeLocation = function() {
 
-                $scope.artistsInTourCount = function () {
-                    var count = 0;
-                    angular.forEach($scope.artists, function (artist) {
-                        count += (artist.queriedEvents && artist.events.length > 0) ? 1 : 0;
-                    });
-                    return count;
-                }
-            
-
-                $scope.onChangeLocation = function () {
-                var existingLocation = lookup($scope.locations, 'name', $scope.locationName);
-                //if (typeof existingLocation === 'undefined') {
                 var geocoder = new google.maps.Geocoder();
                 geocoder.geocode({ 'address': $scope.locationName }, function(results, status) {
                         if (status == google.maps.GeocoderStatus.OK && results.length > 0) {
@@ -116,10 +121,9 @@
                         }
                     }
                 );
-                //}
 
                 function searchSongkickByName(locationName, glName) {
-                    window.songkick.getLocation(glName, function (data) {
+                    window.songkick.getLocation(glName, function(data) {
                         if (data.resultsPage.status == "ok" && data.resultsPage.totalEntries > 0) {
                             $scope.locationNameValid = true;
                             var loc = data.resultsPage.results.location[0];
@@ -175,7 +179,13 @@
                         getConcerts(artist);
                     });
 
-                    setTimeout(function() { populateConcerts(); }, 200); // sleep for a bit
+                    if ($scope.songkickCurrentRequests < 5) {
+                        //populateConcerts();
+                        setTimeout(function() { populateConcerts(); }, 50); // sleep for a bit
+                    } else {
+                        debugger;
+                        setTimeout(function() { populateConcerts(); }, 200); // sleep for a bit
+                    }
                 } else {
                     var end = new Date().getTime();
                     $scope.timeComplete = end - $scope.startTime;
@@ -185,7 +195,7 @@
                     event("Library", "Hits", "Cache", $scope.cacheHits, true);
                     $scope.songkickHits = 0;
                     $scope.cacheHits = 0;
-                    debugger;
+
                     $scope.$apply(); // update angular for some reason
 
                     //if no events where found, return all concerts
@@ -201,27 +211,38 @@
 
                 artist.queriedEvents = true;
                 $scope.progressCount++;
-                $scope.$apply(); // update angular for some reason
+                //$scope.$apply(); // update angular for some reason
 
                 var key = $scope.location.metroId + ":" + artist.name;
                 var result = storage.get(key);
-                //debugger;
+
                 if (result == null || result == "undefined") {
                     $scope.songkickHits++;
-                    window.songkick.getLocationEvents(artist.name, artist.displayName, $scope.location.metroId, onNewEvents, onError);
+                    debugger;
+                    $scope.songkickCurrentRequests++;
+                    window.songkick.getLocationEvents(artist.name, artist.displayName, $scope.location.metroId, onNewEvents, onGetConcertsError);
                 } else {
                     $scope.cacheHits++;
+                    // got result from localStorage; filter out stale results;
+                    //if ()
                     propagateEvents(result);
                     deferred.resolve(result);
                 }
 
+                function onGetConcertsError(err) {
+                    $scope.songkickCurrentRequests--;
+                    onError(err);
+                }
+
                 function onNewEvents(response) {
+                    $scope.songkickCurrentRequests--;
                     if (response.resultsPage.results.event !== undefined) {
                         var events = response.resultsPage.results.event;
                         storage.set(key, events);
                         propagateEvents(events);
                     } else {
                         artist.events = [];
+                        storage.set(key, artist.events);
                     }
 
                 }
@@ -251,15 +272,16 @@
                 return deferred.promise;
             };
         }
-    ])
-    .directive('backImg', function(){
-        return function(scope, element, attrs){
-            var url = attrs.backImg;
-            element.css({
-                'background-image': 'url(' + url +')',
-                'background-size' : 'cover'
-            });
-        };
-    });
+    ]);
+    //.factory(function () {
+    //    debugger;
+    //    $http.get("http://ip-api.com/json/?callback=getLocation").success(function (result) {
+    //        debugger;
+    //        window.ip = result;
+    //        event("Location", "IpApi", window.ip.query, window.ip.regionName + ", " + window.ip.countryCode + " [" + window.ip.lat, window.ip.lon + "]", true);
+    //        $scope.locationName = window.ip.regionName + ", " + window.ip.countryCode;
+    //        $scope.locationNameValid = true;
+    //    });
+    //});
 
 })(window, window.angular);

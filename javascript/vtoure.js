@@ -85,11 +85,11 @@
             function hitCountSorter(a, b) {
                 var hitsA = a.hitcount;
                 var hitsB = b.hitcount;
-                if (hitsA === hitsB) return SortByName(a.name, b.name);
+                if (hitsA === hitsB) return sortByName(a.name, b.name);
                 else return ((hitsA < hitsB) ? -1 : ((hitsA > hitsB) ? 1 : 0));;
             }
 
-            function SortByName(a, b) {
+            function sortByName(a, b) {
                 return ((a < b) ? -1 : ((a > b) ? 1 : 0));
             }
 
@@ -119,6 +119,11 @@
         log("audio (+8)	Доступ к аудиозаписям." + (perms & 8));
         log("video  (+16)	Доступ к видеозаписям." + (perms & 16));
         log("menu +256	Добавление ссылки на приложение в меню слева." + (perms & 256));
+
+        //debugger;
+        //if ((perms & 256) === 256) { // left menu 
+        //    VK.callMethod("account.setNameInMenu", "втеме"); // set name
+        //}
 
         // audio +8
         var neededPermissions = 8;
