@@ -100,6 +100,8 @@
                 resizeVKHeight();
                 // search songkick for the group:
                 //debugger;
+                $scope.artists.push({ queriedEvents: false, name: artistName, displayName: artistName, events: [] });
+                populateConcerts();
                 //getConcerts(artistName);
             };
 
