@@ -1,3 +1,13 @@
+.body {
+    margin: 0 auto;
+    width: 600px;
+    border: 0px solid #ccc;
+    background: #ccc;
+}
+.wrapper {
+    background: white;
+}
+
 .emoji {
 width: 16px;
 height: 16px;

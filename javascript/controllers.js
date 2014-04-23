@@ -22,6 +22,8 @@
             $scope.person = {};
             $scope.events = [];
             $scope.artistFilter = '';
+            $scope.artistFilterValid = true;
+
             // add default locations
             $scope.locations = [
                 {
@@ -201,6 +203,16 @@
                     event("Library", "Hits", "Cache", $scope.cacheHits, true);
                     $scope.songkickHits = 0;
                     $scope.cacheHits = 0;
+
+                    // if there is a artist being searched and he is not found or has no concerts, display fail.
+                    debugger;
+                    if ($scope.artistFilter !== "") {
+                        var artist = lookup($scope.artists, 'name', $scope.artistFilter);
+                        if (artist != null)
+                            $scope.artistFilterValid = artist.events.length > 0;
+                        else
+                            $scope.artistFilterValid = false;
+                    }
 
                     $scope.$apply(); // update angular for some reason
 
