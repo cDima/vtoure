@@ -275,8 +275,15 @@
                     artist.events = events;
                     $scope.eventsFound += events.length;
 
-                    events.forEach(function(e) {
-                        e.artistDisplayName = artist.displayName; // add artist to event graph
+                    events.forEach(function (e) {
+                        debugger;
+                        
+                        if (e.performance.length > 0) e.artistDisplayName = e.performance[0].displayName;
+                        if (typeof artist !== 'undefined') e.artistDisplayName = artist.displayName; // add artist to event graph
+                        
+                        var foundArtist = lookupContains(e.performance, 'displayName', artist.displayName);
+                        if (typeof foundArtist !== 'undefined') e.artistDisplayName = foundArtist.displayName;
+                        
                         $scope.events.push(e); // add to global collection of events
                     });
 

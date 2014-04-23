@@ -70,3 +70,9 @@ function lookup(array, prop, value) {
     for (var i = 0, len = array.length; i < len; i++)
         if (array[i][prop] === value) return array[i];
 }
+
+function lookupContains(array, prop, pattern) {
+    var reg = new RegExp(pattern, "i");
+    for (var i = 0, len = array.length; i < len; i++)
+        if (array[i][prop].match(reg) != null) return array[i];
+}
