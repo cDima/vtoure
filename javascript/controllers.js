@@ -104,19 +104,6 @@
 
             $scope.onChangeLocation = function() {
 
-                //var geocoder = new google.maps.Geocoder();
-                /*geocoder.geocode({ 'address': $scope.locationName }, function(results, status) {
-                        if (status == google.maps.GeocoderStatus.OK && results.length > 0) {
-                            searchSongkickByName($scope.locationName, results[0].formatted_address); // with the help of google, off we go
-                            log("google geolocation finished, lat,lon:" + results[0].geometry.location.k + "," + results[0].geometry.location.A + ";name=" + results[0].formatted_address);
-                            event("Location", "GoogleSearch", results[0].formatted_address, results[0].geometry.location.k + "," + results[0].geometry.location.A, true);
-
-                        } else {
-                            $scope.locationNameValid = false;
-                        }
-                    }
-                );*/
-
                 geocoder.geocode($scope.locationName).then(function (geoResult) {
                     debugger;
                     searchSongkickByName($scope.locationName, geoResult); // with the help of google, off we go
