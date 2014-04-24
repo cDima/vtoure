@@ -119,7 +119,7 @@
                                 <div class="col-xs-12">
                                     <br/>
                                     <p>Найденые концерты:</p>
-                                    <div class="media" ng-repeat="event in events| filter: artistFilter |orderBy:'start.date'">
+                                    <div class="media" ng-repeat="event in events| filter: location.metroId | filter: artistFilter |orderBy:'start.date'">
                                         <a class="pull-left" href="{{event.uri}}" target="_blank" onclick="trackOutboundLink(this.href);">
                                             <div style="background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIj48L3JlY3Q+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+); width: 64px; height: 64px;margin-right: 10px; max-height: 64px; max-width:64px;" class="img-rounded" >
                                                 <div back-img="https://ssl.sk-static.com/images/media/profile_images/venues/{{event.venue.id}}/col1" style="width: 64px; height: 64px;margin-right: 10px; max-height: 64px; max-width:64px;"  class="img-rounded">
