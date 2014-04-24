@@ -112,12 +112,9 @@
                 });
 
                 function searchSongkickByName(locationName, glName) {
-                    var deferredSK = songkick.getLocation(glName);
-                    debugger;
-                    deferredSK.then(function (loc) {
+                    songkick.getLocation(glName).then(function (loc) {
                         $scope.locationNameValid = true;
-                        var metroId = loc.metroArea.id;
-
+                        
                         var location = {
                             lat: loc.metroArea.lat,
                             lon: loc.metroArea.lng,
@@ -128,67 +125,34 @@
                         };
 
                         // onNewLocation:
-                        var existingLocation = lookup($scope.locations, 'metroId', metroId);
-
-                        if (existingLocation === null) {
-                            $scope.locations.push(location);
-                            existingLocation = $scope.locations[$scope.locations.length - 1];
-                        } // add to array if new loc
-                        $scope.location = existingLocation;
-
-                        event("Location", "SongkickSearch", $scope.location.name, $scope.location.lat + "," + $scope.location.lon, true);
-
-                        // rescan
-                        //$scope.events = [];
-                        $scope.artists.forEach(function (artist) {
-                            artist.queriedEvents = false;
-                        });
-                        populateConcerts();
+                        onNewLocation(location);
+                        
+                        rescan();
                     }, function(error) {
                         $scope.locationNameValid = false;
                         error('geocode was not successful for the following reason: ' + data.resultsPage.status);
                     });
-                    //window.songkick.getLocation(glName, function (data) {
-                    //    if (data.resultsPage.status == "ok" && data.resultsPage.totalEntries > 0) {
-                    //        $scope.locationNameValid = true;
-                    //        var loc = data.resultsPage.results.location[0];
-                    //        var metroId = loc.metroArea.id;
-
-                    //        var location = {
-                    //            lat: loc.metroArea.lat,
-                    //            lon: loc.metroArea.lng,
-                    //            name: locationName.capitalize(),
-                    //            glName: glName,
-                    //            skName: loc.metroArea.displayName + ", " + loc.metroArea.country.displayName,
-                    //            metroId: loc.metroArea.id
-                    //        };
-
-                    //        var existingLocation = lookup($scope.locations, 'metroId', metroId);
-
-                    //        if (existingLocation === null) {
-                    //            $scope.locations.push(location);
-                    //            existingLocation = $scope.locations[$scope.locations.length - 1];
-                    //        } // add to array if new loc
-                    //        $scope.location = existingLocation;
-
-                    //        event("Location", "SongkickSearch", $scope.location.name, $scope.location.lat + "," + $scope.location.lon, true);
-
-                    //        // rescan
-                    //        //$scope.events = [];
-                    //        $scope.artists.forEach(function(artist) {
-                    //            artist.queriedEvents = false;
-                    //        });
-                    //        populateConcerts();
-                    //    } else {
-                    //        $scope.locationNameValid = false;
-                    //        error('geocode was not successful for the following reason: ' + data.resultsPage.status);
-                    //    }
-                    //}, function(status) {
-                    //    log('geocode was not successful for the following reason: ' + status);
-                    //    $scope.locationNameValid = false;
-                    //});
                 }
             };
+
+            function onNewLocation(location) {
+                var existingLocation = lookup($scope.locations, 'metroId', location.metroId);
+
+                if (existingLocation === null) {
+                    $scope.locations.push(location);
+                    existingLocation = $scope.locations[$scope.locations.length - 1];
+                } // add to array if new location
+                $scope.location = existingLocation;
+                event("Location", "SongkickSearch", $scope.location.name, $scope.location.lat + "," + $scope.location.lon, true);
+
+            }
+
+            function rescan() {
+                $scope.artists.forEach(function (artist) {
+                    artist.queriedEvents = false;
+                });
+                populateConcerts();
+            }
 
             function populateConcerts() {
 
