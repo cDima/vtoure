@@ -3,15 +3,38 @@
 (function (window, angular) {
     'use strict';
 
-    angular.module('songkickJS', []).factory('songkick', ['$scope', '$http'], function ($scope, $http) {
-        var apikey = 'moHNsXaKT6XHh7pP';
-        var publicMethods = {
-            getEvents: function(artist) {
-                return $http.jsonp("//api.songkick.com/api/3.0/events.json", { location: "clientip", apikey: apikey, artist_name: artist });
-            }
-        };
-        return publicMethods;
-    });
+    var songkickJS = angular.module('songkickJS', []);
+    
+    songkickJS.factory('songkick', ['$scope', '$http', '$q', function ($scope, $http, $q) {
+
+        //var apikey = 'moHNsXaKT6XHh7pP';
+
+        //var publicMethods = {
+        //    getEvents: function(artist) {
+        //        return $http.jsonp("//api.songkick.com/api/3.0/events.json", { location: "clientip", apikey: apikey, artist_name: artist });
+        //    },
+        //    getLocation: function (cityname, onSuccess, onError) {
+                
+        //        var data = { apikey: this.apikey };
+
+        //        if (cityname === undefined) {
+        //            data.location = "clientip";
+        //        } else {
+        //            data.query = cityname;
+        //        }
+
+        //        $.ajax({
+        //            url: "//api.songkick.com/api/3.0/search/locations.json",
+        //            data: data,
+        //            dataType: "jsonp",
+        //            jsonp: 'jsoncallback'
+        //        }).fail(onError).done(onSuccess);
+        //    }
+        //};
+        
+        //return publicMethods;
+        return {};
+    }]);
 
 })(window, window.angular);
 
