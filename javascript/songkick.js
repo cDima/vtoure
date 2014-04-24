@@ -28,7 +28,6 @@ $(function () {
             }).fail(onError).done(onSuccess);
         },
         getLocationEvents: function (artist, displayName, /*lat, lon*/ metroId, onSuccess, onError) {
-            debugger;
             $.ajax({
                 url: "//api.songkick.com/api/3.0/events.json?",
                 data: {
@@ -40,7 +39,6 @@ $(function () {
             }).fail(onError).done(onSuccess);
         },
         getAllLocationEvents: function (metroId, onSuccess, onError) {
-            debugger;
             $.ajax({
                 url: "//api.songkick.com/api/3.0/metro_areas/" + metroId + "/calendar.json",
                 data: { apikey: this.apikey },
@@ -49,7 +47,6 @@ $(function () {
             }).fail(onError).done(onSuccess);
         },
         getLocation: function (cityname, onSuccess, onError) {
-            debugger;
             var data = { apikey: this.apikey };
 
             if (cityname === undefined) {

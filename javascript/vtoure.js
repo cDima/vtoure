@@ -101,7 +101,7 @@
             }
 
             var scope = angular.element($("#vtoureApp")).scope();
-            debugger;
+            
             scope.$apply(function() {
                 scope.newArtists(artists); // scan all artists.
             });
@@ -134,7 +134,7 @@
             error("needed Permissions are not granted, need " + neededPermissions + " have " + perms);
 
             var $scope = angular.element($("#vtoureApp")).scope();
-            debugger;
+            
             $scope.onChangeLocation();
             //scope.$apply(function () {
             //    scope.getAllConcertsArea(); // scan all the things.
