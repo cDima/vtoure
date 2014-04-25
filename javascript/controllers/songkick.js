@@ -8,32 +8,56 @@
     songkickJS.factory('songkick', ['$http', '$q', function ($http, $q) {
         var apikey = 'moHNsXaKT6XHh7pP';
 
+        // private function
+        function jsonpRequest(url, params) {
+            var deferred = $q.defer();
+            if (typeof params === 'undefined' || params == null) params = {};
+            params.apikey = apikey;
+            debugger;
+
+            $http.jsonp('//api.songkick.com/api/3.0/' + url + '?jsoncallback=JSON_CALLBACK',
+                { params: params }).error(function (error) {
+                    deferred.reject(error);
+                }).success(function (data) {
+                    if (data.resultsPage.status !== "ok") {
+                        deferred.reject(data.resultsPage.status);
+                    //} else if (data.resultsPage.totalEntries == 0) {
+                      //  deferred.reject("no results");
+                    } else {
+                        deferred.resolve(data.resultsPage.results);
+                    }
+                });
+            return deferred.promise;
+        }
+        
         var publicMethods = {
-            getEvents: function(artist) {
-                return $http.jsonp("//api.songkick.com/api/3.0/events.json", { location: "clientip", apikey: apikey, artist_name: artist });
+            getEvents: function(artist, displayName) {
+                return jsonpRequest('events.json', { location: "clientip", artist_name: artist });
             },
-            getLocation: function (cityname, onSuccess, onError) {
-                var deferred = $q.defer();
-                var data = { apikey: apikey };
+            getLocationEvents: function (artist, displayName, metroId) {
                 debugger;
+                return jsonpRequest("events.json", {
+                    location: "sk:" + metroId,
+                    artist_name: artist
+                });
+            },
+            getAllLocationEvents: function (metroId) {
+                return jsonpRequest('metro_areas/' + metroId + '/calendar.json');
+            },
+            getLocation: function(cityname) {
+                var data = {};
                 if (cityname === undefined) {
                     data.location = "clientip";
                 } else {
                     data.query = cityname;
                 }
-                $http.jsonp('//api.songkick.com/api/3.0/search/locations.json?jsoncallback=JSON_CALLBACK',
-                    { params: data }).error(function(error) {
-                        deferred.reject(error);
-                    }).success(function(data) {
-                        if (data.resultsPage.status !== "ok") {
-                            deferred.reject(data.resultsPage.status);
-                        } else if (data.resultsPage.totalEntries == 0) {
-                            deferred.reject("no results");
-                        } else {
-                            deferred.resolve(data.resultsPage.results.location[0]);
-                        }
-                    });
-                return deferred.promise;
+                return jsonpRequest('search/locations.json', data).then(function (result) {
+                    debugger;
+                    if (typeof result.location === "undefined")
+                        return $q.reject("no results");
+                    else
+                        return result.location[0];
+                });
             }
         };
 

@@ -10,7 +10,6 @@
         var geocoder = new google.maps.Geocoder();
         var publicMethods = {
             geocode: function(address, success, errorCallback) {
-                debugger;
                 var deferred = $q.defer();
                 geocoder.geocode({ 'address': address }, function(results, status) {
                     if (status == google.maps.GeocoderStatus.OK && results.length > 0) {

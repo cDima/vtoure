@@ -69,8 +69,9 @@
 
             $scope.getAllConcertsArea = function() {
                 if ($scope.location.metroId !== undefined) {
-                    window.songkick.getAllLocationEvents($scope.location.metroId, function(response) {
-                        $scope.events = $scope.events.concat(response.resultsPage.results.event);
+                    debugger ;
+                    songkick.getAllLocationEvents($scope.location.metroId).then(function (results) {
+                        $scope.events = $scope.events.concat(results.event);
                         $scope.$apply(); // update angular for some reason
                         resizeVKHeight();
                         storage.set("events", $scope.events);
@@ -91,7 +92,6 @@
                 // search songkick for the group:
                 $scope.artists.push({ queriedEvents: false, name: artistName, displayName: artistName, events: [] });
                 populateConcerts();
-                //getConcerts(artistName);
             };
 
             $scope.artistsInTourCount = function() {
@@ -107,30 +107,33 @@
                 geocoder.geocode($scope.locationName).then(function(geoResult) {
                     searchSongkickByName($scope.locationName, geoResult); // with the help of google, off we go
                 }, function() {
-                    debugger;
                     $scope.locationNameValid = false;
                 });
 
                 function searchSongkickByName(locationName, glName) {
                     songkick.getLocation(glName).then(function (loc) {
-                        $scope.locationNameValid = true;
-                        
-                        var location = {
-                            lat: loc.metroArea.lat,
-                            lon: loc.metroArea.lng,
-                            name: locationName.capitalize(),
-                            glName: glName,
-                            skName: loc.metroArea.displayName + ", " + loc.metroArea.country.displayName,
-                            metroId: loc.metroArea.id
-                        };
+                        if (loc == null) {
+                            $scope.locationNameValid = false;
+                        } else {
+                            $scope.locationNameValid = true;
 
-                        // onNewLocation:
-                        onNewLocation(location);
-                        
-                        rescan();
-                    }, function(error) {
+                            var location = {
+                                lat: loc.metroArea.lat,
+                                lon: loc.metroArea.lng,
+                                name: locationName.capitalize(),
+                                glName: glName,
+                                skName: loc.metroArea.displayName + ", " + loc.metroArea.country.displayName,
+                                metroId: loc.metroArea.id
+                            };
+
+                            // onNewLocation:
+                            onNewLocation(location);
+
+                            rescan();
+                        }
+                    }, function (errorResult) {
                         $scope.locationNameValid = false;
-                        error('geocode was not successful for the following reason: ' + data.resultsPage.status);
+                        error('geocode was not successful for the following reason: ' + errorResult);
                     });
                 }
             };
@@ -141,7 +144,9 @@
                 if (existingLocation === null) {
                     $scope.locations.push(location);
                     existingLocation = $scope.locations[$scope.locations.length - 1];
-                } // add to array if new location
+                }
+
+                // add to array if new location
                 $scope.location = existingLocation;
                 event("Location", "SongkickSearch", $scope.location.name, $scope.location.lat + "," + $scope.location.lon, true);
 
@@ -176,77 +181,88 @@
                     }
                 } else {
                     var end = new Date().getTime();
-                    $scope.timeComplete = end - $scope.startTime;
-                    event("Library", "Concerts available", "Concerts available", $scope.eventsFound, true);
-                    trackTiming("Library", "ScanComplete", $scope.timeComplete, "Full scan complete");
-                    event("Library", "Hits", "Songkick", $scope.songkickHits, true);
-                    event("Library", "Hits", "Cache", $scope.cacheHits, true);
-                    $scope.songkickHits = 0;
-                    $scope.cacheHits = 0;
-
-                    // if there is a artist being searched and he is not found or has no concerts, display fail.
-                    if ($scope.artistFilter !== "") {
-                        var artist = lookup($scope.artists, 'name', $scope.artistFilter);
-                        if (artist != null)
-                            $scope.artistFilterValid = artist.events.length > 0;
-                        else
-                            $scope.artistFilterValid = false;
-                    }
-
-                    $scope.$apply(); // update angular for some reason
-                    storage.set("events", $scope.events);
-
-                    //if no events where found, return all concerts
-                    if ($scope.events.length == 0) {
-                        $scope.getAllConcertsArea();
-                    }
+                    var timeComplete = end - $scope.startTime;
+                    trackTiming("Library", "ScanComplete", timeComplete, "Full scan complete");
+                    
+                    // on finished event search:
+                    onFinishedEventSearch();
                 }
             };
 
+            function onFinishedEventSearch() {
+                event("Library", "Concerts available", "Concerts available", $scope.eventsFound, true);
+                event("Library", "Hits", "Songkick", $scope.songkickHits, true);
+                event("Library", "Hits", "Cache", $scope.cacheHits, true);
+                $scope.songkickHits = 0;
+                $scope.cacheHits = 0;
+
+
+                validateArtistFilter();
+
+                $scope.$apply(); // update angular for some reason
+
+                storage.set("events", $scope.events);
+
+                //if no events where found, return all concerts
+                if (!foundLocalConcerts()) {
+                    $scope.getAllConcertsArea();
+                }
+            }
+
+            function validateArtistFilter() {
+                // if there is a artist being searched and he is not found or has no concerts, display fail.
+                if ($scope.artistFilter !== "") {
+                    var artist = lookup($scope.artists, 'name', $scope.artistFilter);
+                    if (artist != null)
+                        $scope.artistFilterValid = artist.events.length > 0;
+                    else
+                        $scope.artistFilterValid = false;
+                }
+            }
+            
+            function foundLocalConcerts() {
+                for (var i = 0, len = $scope.events.length; i < len; i++) {
+                    if ($scope.events[i].venue.metroArea.id == $scope.location.metroId)
+                        return true;
+                }
+                return false;
+            }
+
             function getConcerts(artist) {
-
-                var deferred = $q.defer();
-
+            
                 artist.queriedEvents = true;
                 $scope.progressCount++;
-                //$scope.$apply(); // update angular for some reason
 
                 var key = $scope.location.metroId + ":" + artist.name;
-                var result = storage.get(key);
+                var cacheHit = storage.get(key);
 
-                if (result == null || result == "undefined") {
+                if (cacheHit == null || cacheHit == "undefined") {
                     $scope.songkickHits++;
                     $scope.songkickCurrentRequests++;
-                    window.songkick.getLocationEvents(artist.name, artist.displayName, $scope.location.metroId, onNewEvents, onGetConcertsError);
+                    debugger;
+                    songkick.getLocationEvents(artist.name, artist.displayName, $scope.location.metroId).then(onNewEvents, onGetConcertsError);
                 } else {
                     $scope.cacheHits++;
-                    // got result from localStorage; filter out stale results;
+                    // got cacheHit from localStorage; filter out stale results;
                     //if ()
-                    propagateEvents(result);
-                    deferred.resolve(result);
+                    propagateEvents(cacheHit);
                 }
 
                 function onGetConcertsError(err) {
                     $scope.songkickCurrentRequests--;
-                    onError(err);
+                    error(err);
                 }
 
-                function onNewEvents(response) {
+                function onNewEvents(results) {
                     $scope.songkickCurrentRequests--;
-                    if (response.resultsPage.results.event !== undefined) {
-                        var events = response.resultsPage.results.event;
+                    if (results.event !== undefined) {
+                        var events = results.event;
                         storage.set(key, events);
                         propagateEvents(events);
                     } else {
-                        //artist.events = [];
                         storage.set(key, artist.events);
                     }
 
-                }
-
-                function onError(errr) {
-                    error(errr);
-                    deferred.reject(errr);
                 }
 
                 function propagateEvents(events) {
@@ -262,7 +278,6 @@
 
                             var foundArtist = lookupContains(e.performance, 'displayName', artist.displayName);
                             if (foundArtist !== null) e.artistDisplayName = foundArtist.displayName;
-
                             $scope.events.push(e); // add to global collection of events
                         }
                     });
@@ -270,11 +285,7 @@
                     if ($scope.progressCount !== 0) $scope.$apply(); // update angular for some reason
 
                     resizeVKHeight();
-
-                    deferred.resolve(events);
                 }
-
-                return deferred.promise;
             };
         }
     ]);
