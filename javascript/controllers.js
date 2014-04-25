@@ -14,6 +14,9 @@
             $scope.person = {};
             $scope.events = storage.get("events");
             if ($scope.events == null) $scope.events = [];
+            debugger;
+            cleanOldEvents();
+            
             $scope.artistFilter = '';
             $scope.artistFilterValid = true;
 
@@ -228,6 +231,14 @@
                 return false;
             }
 
+            function cleanOldEvents() {
+                $scope.events = $scope.events.filter(eventNotStale);
+            }
+            
+            function eventNotStale(event) {
+                return new Date(event.start.date) >= new Date();
+            }
+            
             function getConcerts(artist) {
             
                 artist.queriedEvents = true;
@@ -236,6 +247,16 @@
                 var key = $scope.location.metroId + ":" + artist.name;
                 var cacheHit = storage.get(key);
 
+                if (cacheHit !== null && typeof cacheHit !== "undefined" && cacheHit.length > 0) {
+                    // got cacheHit from localStorage; filter out stale results;
+                    var event = cacheHit[0];
+                    if (!eventNotStale(event)) {
+                        debugger;
+                        storage.remove(key);
+                        cacheHit = null;
+                    }
+                }
+
                 if (cacheHit == null || cacheHit == "undefined") {
                     $scope.songkickHits++;
                     $scope.songkickCurrentRequests++;
@@ -243,8 +264,6 @@
                     songkick.getLocationEvents(artist.name, artist.displayName, $scope.location.metroId).then(onNewEvents, onGetConcertsError);
                 } else {
                     $scope.cacheHits++;
-                    // got cacheHit from localStorage; filter out stale results;
-                    //if ()
                     propagateEvents(cacheHit);
                 }
 
@@ -271,7 +290,6 @@
 
                     events.forEach(function (e) {
                         // check existence
-                        debugger;
                         if (lookup($scope.events, 'id', e.id) === null) {
                             if (e.performance.length > 0) e.artistDisplayName = e.performance[0].displayName;
                             if (typeof artist !== 'undefined') e.artistDisplayName = artist.displayName; // add artist to event graph

@@ -13,7 +13,6 @@
             var deferred = $q.defer();
             if (typeof params === 'undefined' || params == null) params = {};
             params.apikey = apikey;
-            debugger;
 
             $http.jsonp('//api.songkick.com/api/3.0/' + url + '?jsoncallback=JSON_CALLBACK',
                 { params: params }).error(function (error) {
@@ -35,7 +34,6 @@
                 return jsonpRequest('events.json', { location: "clientip", artist_name: artist });
             },
             getLocationEvents: function (artist, displayName, metroId) {
-                debugger;
                 return jsonpRequest("events.json", {
                     location: "sk:" + metroId,
                     artist_name: artist
