@@ -9,20 +9,25 @@
 }
 
 .emoji {
-width: 16px;
-height: 16px;
-margin: 0px 0px;
-border: none;
-vertical-align: top;
+    width: 16px;
+    height: 16px;
+    margin: 0px 0px;
+    border: none;
+    vertical-align: top;
 }
 
-.inputtown {
+.longinput {
      display: inline; 
-     width: auto;
+     width: 190px;
 }
 .has-feedback .form-control {
      padding-right: 10px !important;
  }
+.location-name {
+    white-space: nowrap;
+    float: left;
+    padding-right: 7px;
+}
 .input-location {
     /*margin-top: -33px;
     margin-left: 370px;*/
@@ -70,6 +75,8 @@ vertical-align: top;
 
 .paddingtop {
     padding-top: 10px;
+    border: 1px solid #ccc;
+    border-top: 0;
 }
 
 .topprofile
@@ -115,10 +122,15 @@ vertical-align: top;
     transition: 1s;
   
     opacity:1; /* visible */
+    
+    height: auto;
+    overflow: hidden;
 }
 /* destination animations */
 .ng-hide-add-active	 {
    opacity:0; /* transparent */
+   
+   height: 0;
 }
 
 

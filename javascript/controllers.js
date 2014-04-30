@@ -5,16 +5,26 @@
 (function (window, angular) {
     'use strict';
 
-    var vtoureApp = angular.module('vtoureApp', ['backgroundImgDirective', 'ngAnimate', 'angularLocalStorage', 'geocodeModule', 'songkickJS']);
+    var vtoureApp = angular.module('vtoureApp', ['backgroundImgDirective', 'ngAnimate', 'angularLocalStorage', 'geocodeModule', 'songkickJS', 'ui.bootstrap']);
 
     vtoureApp.controller('vtoureCtrl', [
         '$scope', '$q', 'storage', 'geocoder', 'songkick', function ($scope, $q, storage, geocoder, songkick) {
 
             $scope.artists = [];
+            
             $scope.person = {};
             $scope.events = storage.get("events");
             if ($scope.events == null) $scope.events = [];
-            debugger;
+            $scope.artistsInTourCount = 0;
+            
+            $scope.updateToursCount = function () {
+                var count = 0;
+                angular.forEach($scope.artists, function (artist) {
+                    count += (artist.queriedEvents && artist.events.length > 0) ? 1 : 0;
+                });
+                $scope.artistsInTourCount = count;
+            };
+
             cleanOldEvents();
             
             $scope.artistFilter = '';
@@ -88,21 +98,28 @@
                 return false;
             };
 
+            /*
+            $scope.hasEvents = function(artistName) {
+                var probableArtist = lookupContains($scope.artists, 'name', artistName);
+                return probableArtist == null || probableArtist.events.length > 0;
+            };
+            */
+
+            $scope.lookup = function(array, prop, value) {
+                for (var i = 0, len = array.length; i < len; i++)
+                    if (array[i][prop] === value) return array[i];
+                return null;
+            };
+
             $scope.filterByArtist = function(artistName) {
                 $scope.artistFilter = artistName;
                 $scope.$apply();
                 resizeVKHeight();
                 // search songkick for the group:
-                $scope.artists.push({ queriedEvents: false, name: artistName, displayName: artistName, events: [] });
-                populateConcerts();
-            };
-
-            $scope.artistsInTourCount = function() {
-                var count = 0;
-                angular.forEach($scope.artists, function(artist) {
-                    count += (artist.queriedEvents && artist.events.length > 0) ? 1 : 0;
-                });
-                return count;
+                if (lookup($scope.artists, 'name', artistName) == null) {
+                    $scope.artists.push({ queriedEvents: false, name: artistName, displayName: artistName, events: [] });
+                    populateConcerts();
+                }
             };
 
             $scope.onChangeLocation = function() {
@@ -198,7 +215,7 @@
                 event("Library", "Hits", "Cache", $scope.cacheHits, true);
                 $scope.songkickHits = 0;
                 $scope.cacheHits = 0;
-
+                $scope.updateToursCount();
 
                 validateArtistFilter();
 
@@ -234,7 +251,11 @@
             function cleanOldEvents() {
                 $scope.events = $scope.events.filter(eventNotStale);
             }
-            
+
+            $scope.clearCache = function() {
+                storage.clearAll();
+            };
+
             function eventNotStale(event) {
                 return new Date(event.start.date) >= new Date();
             }
@@ -287,17 +308,44 @@
                 function propagateEvents(events) {
                     artist.events = events;
                     $scope.eventsFound += events.length;
-
-                    events.forEach(function (e) {
+                    
+                    events.forEach(function(e) {
                         // check existence
-                        if (lookup($scope.events, 'id', e.id) === null) {
-                            if (e.performance.length > 0) e.artistDisplayName = e.performance[0].displayName;
-                            if (typeof artist !== 'undefined') e.artistDisplayName = artist.displayName; // add artist to event graph
 
-                            var foundArtist = lookupContains(e.performance, 'displayName', artist.displayName);
-                            if (foundArtist !== null) e.artistDisplayName = foundArtist.displayName;
-                            $scope.events.push(e); // add to global collection of events
+                        // update.
+                        /*
+                        if (e.performance.length > 0) e.artistDisplayName = e.performance[0].displayName; // set first performer
+                        if (typeof artist !== 'undefined') e.artistDisplayName = artist.displayName; // add artist to event graph
+                        */
+                        
+                        var foundArtist = lookupContains(e.performance, 'displayName', artist.displayName);
+                        if (foundArtist !== null) e.artistDisplayName = foundArtist.displayName;
+
+                        e.performance.forEach(function (performance) {
+                            // crop name
+                            //var n = performance.displayName.search(' at ');
+                            //if (n > 0) performance.displayName = performance.displayName.substr(0, n);
+
+                            // find interesting artists
+                            var artistInSearch = lookupContains($scope.artists, 'name', performance.artist.displayName);
+                            if (artistInSearch != null)
+                                performance.interesting = true;
+                        });
+
+                        var existingEvent = lookup($scope.events, 'id', e.id);
+                        debugger;
+                        var found = false;
+                        for (var i = 0, len = $scope.events.length; i < len; i++) {
+                            if ($scope.events[i]['id'] === e.id) {
+                                //$scope.events[i] = e; // update
+                                found = true;
+                                break;
+                            }
                         }
+                        if (!found) $scope.events.push(e); // add to global collection of events
+                        $scope.artistsInTourCount++;
+                        //debugger;
+                        //$scope.events[" " + e.id] = e;
                     });
 
                     if ($scope.progressCount !== 0) $scope.$apply(); // update angular for some reason

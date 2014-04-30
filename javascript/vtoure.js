@@ -9,7 +9,21 @@
     
     $('#audiopermissions').click(function () { requestPermissions(); return false; });
 
+    function inIframe() {
+        try {
+            return window.self !== window.top;
+        } catch (e) {
+            return true;
+        }
+    }
+
+    //VK.init({ apiId: 4274997 });
+    //VK.init({ apiId: 4335308 });
+    
+    //VK.Widgets.Auth("vk_auth", { width: "200px", authUrl: '/dev/Auth' });
+    
     VK.init(function () {
+        
         log("VK init successful");
         VK.addCallback("onSettingsChanged", onSettingsChanged);
         VK.addCallback("onApplicationAdded", onApplicationAdded);
@@ -19,7 +33,7 @@
         // API initialization failed 
         error("VK init unsuccessful");
     }, '5.16');
-
+    
 
     function getPersonalGreeting() {
         VK.api("users.get", { fields: "city, country,photo_50,can_see_audio,counters" }, function (data) {
