@@ -117,13 +117,14 @@
                                     <div class=""  id="artists-ng" ng-hide="(artists.length == 0)" ng-cloak>
                                         <div style="margin-bottom: 6px"><small>Исполнителей с концертами {{artistsInTourCount}}</small> из {{artists.length}}.</div>
                                         <div>
-                                            <span ng-repeat="artist in artists | orderBy: '-events.length'">
+                                            <span ng-repeat="artist in artists | orderBy: '-events.length' | limitTo:25">
                                                 <a class="btn btn-default btn-xs" ng-click="filterByArtist(artist.displayName)"
                                                    ng-class="{'btn-primary': (artist.queriedEvents && artist.events.length > 0), 'btn-warning': (artist.queriedEvents && artist.events.length == 0), 'btn-info': (!artist.queriedEvents)}"
                                                    style="margin-bottom: 6px;">
                                                     {{artist.displayName}} <!-- <span ng-hide="artist.events.length == 0">{{artist.events.length}}</span> -->
                                                 </a>
                                             </span>
+                                            <span class="small" ng-show="artists.length > 25"> ...а так же {{artists.length - 25}} других.</span>
                                         </div>
                                     </div>
                                 </div>
