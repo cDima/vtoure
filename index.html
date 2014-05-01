@@ -131,7 +131,7 @@
                             <div class="row">
                                 <div class="col-xs-12">
                                     <br/>
-                                    <p>Найдене концертов в городе {{location.name}}: <b>{{events.length}}</b></p>
+                                    <p>Найдено концертов в городе {{location.name}}: <b>{{(events| filter: location.metroId | filter: artistFilter).length}}</b></p>
                                     <div class="media" ng-repeat="event in events| filter: location.metroId | filter: artistFilter |orderBy:'start.datetime'"  ng-cloak>
                                         <a class="pull-left" href="{{event.uri}}" target="_blank" onclick="trackOutboundLink(this.href);">
                                             <div style="background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIj48L3JlY3Q+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+); width: 64px; height: 64px;margin-right: 10px; max-height: 64px; max-width:64px;" class="img-rounded" >
@@ -145,16 +145,31 @@
                                             <h4 class="media-heading">{{event.displayName}}</h4>
                                             <a href="{{event.uri}}&appsrc=vteme" onclick="trackOutboundLink(this.href);" target="_blank"><b>{{event.start.date | date:'MMM d, y'}}{{event.start.datetime | date:', h a'}}</b></a> @ 
                                             <a href="{{event.venue.uri}}&appsrc=vteme" onclick="trackOutboundLink(this.href);" target="_blank">{{event.venue.displayName}}</a>, {{event.location.city}}
-                                            <p style="margin-top: 3px;">
+                                            <div style="margin-top: 3px;">
                                                 <span ng-repeat="artist in event.performance | orderBy: 'interesting'">
-                                                    <a class="btn btn-default btn-xs" ng-click="filterByArtist(artist.displayName)" style="margin-bottom: 6px;"
-                                                        ng-class="{'btn-primary': artist.interesting }"
+                                                    <a class="btn btn-info btn-xs" ng-click="filterByArtist(artist.displayName)" style="margin-bottom: 6px;"
+                                                       ng-class="{'btn-primary': artist.interesting }"
                                                         >
                                                         {{artist.displayName}} 
                                                     </a>
                                                 </span>
+                                            </div>
+                                            <p class="small">
+                                                <!--<a href="" ng-click="collapse = !collapse">Отправить другу</a>
+                                                <div ng-show="collapse">
+                                                    <input type="text"
+                                                            class="form-control input-sm longinput" 
+                                                           typeahead="friend.name for friend in vk.friends |  filter:$viewValue  | limitTo:8" 
+                                                           typeahead-editable="false">
+                                                        
+                                                    </input>
+
+                                                </div>-->
                                             </p>
                                         </div>
+                                        <p>
+                                            
+                                        </p>
                                     </div>  
                                 </div>
                             </div>

@@ -11,7 +11,7 @@
         '$scope', '$q', 'storage', 'geocoder', 'songkick', function ($scope, $q, storage, geocoder, songkick) {
 
             $scope.artists = [];
-            
+
             $scope.person = {};
             $scope.events = storage.get("events");
             if ($scope.events == null) $scope.events = [];
@@ -82,7 +82,6 @@
 
             $scope.getAllConcertsArea = function() {
                 if ($scope.location.metroId !== undefined) {
-                    debugger ;
                     songkick.getAllLocationEvents($scope.location.metroId).then(function (results) {
                         $scope.events = $scope.events.concat(results.event);
                         $scope.$apply(); // update angular for some reason
@@ -98,25 +97,12 @@
                 return false;
             };
 
-            /*
-            $scope.hasEvents = function(artistName) {
-                var probableArtist = lookupContains($scope.artists, 'name', artistName);
-                return probableArtist == null || probableArtist.events.length > 0;
-            };
-            */
-
-            $scope.lookup = function(array, prop, value) {
-                for (var i = 0, len = array.length; i < len; i++)
-                    if (array[i][prop] === value) return array[i];
-                return null;
-            };
-
             $scope.filterByArtist = function(artistName) {
                 $scope.artistFilter = artistName;
                 $scope.$apply();
                 resizeVKHeight();
                 // search songkick for the group:
-                if (lookup($scope.artists, 'name', artistName) == null) {
+                if (lookupContains($scope.artists, 'displayName', artistName) == null) {
                     $scope.artists.push({ queriedEvents: false, name: artistName, displayName: artistName, events: [] });
                     populateConcerts();
                 }
@@ -232,7 +218,7 @@
             function validateArtistFilter() {
                 // if there is a artist being searched and he is not found or has no concerts, display fail.
                 if ($scope.artistFilter !== "") {
-                    var artist = lookup($scope.artists, 'name', $scope.artistFilter);
+                    var artist = lookupContains($scope.artists, 'name', $scope.artistFilter);
                     if (artist != null)
                         $scope.artistFilterValid = artist.events.length > 0;
                     else
@@ -332,8 +318,6 @@
                                 performance.interesting = true;
                         });
 
-                        var existingEvent = lookup($scope.events, 'id', e.id);
-                        debugger;
                         var found = false;
                         for (var i = 0, len = $scope.events.length; i < len; i++) {
                             if ($scope.events[i]['id'] === e.id) {
