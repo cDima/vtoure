@@ -84,7 +84,7 @@
                 if ($scope.location.metroId !== undefined) {
                     songkick.getAllLocationEvents($scope.location.metroId).then(function (results) {
                         $scope.events = $scope.events.concat(results.event);
-                        $scope.$apply(); // update angular for some reason
+                        //$scope.$apply(); // update angular for some reason
                         resizeVKHeight();
                         storage.set("events", $scope.events);
                     }, onerror);
@@ -99,7 +99,7 @@
 
             $scope.filterByArtist = function(artistName) {
                 $scope.artistFilter = artistName;
-                $scope.$apply();
+                //$scope.$apply();
                 resizeVKHeight();
                 // search songkick for the group:
                 if (lookupContains($scope.artists, 'displayName', artistName) == null) {
@@ -304,16 +304,17 @@
                         if (typeof artist !== 'undefined') e.artistDisplayName = artist.displayName; // add artist to event graph
                         */
                         
-                        var foundArtist = lookupContains(e.performance, 'displayName', artist.displayName);
-                        if (foundArtist !== null) e.artistDisplayName = foundArtist.displayName;
+                        // crop name
+                        debugger;
+
+                        e.displayName = cropName(e.displayName);
+                        
+                        //var foundArtist = lookupContains(e.performance, 'displayName', artist.displayName);
+                        //if (foundArtist !== null) e.artistDisplayName = foundArtist.displayName;
 
                         e.performance.forEach(function (performance) {
-                            // crop name
-                            //var n = performance.displayName.search(' at ');
-                            //if (n > 0) performance.displayName = performance.displayName.substr(0, n);
-
                             // find interesting artists
-                            var artistInSearch = lookupContains($scope.artists, 'name', performance.artist.displayName);
+                            var artistInSearch = lookupContains($scope.artists, 'displayName', performance.artist.displayName);
                             if (artistInSearch != null)
                                 performance.interesting = true;
                         });
@@ -321,7 +322,8 @@
                         var found = false;
                         for (var i = 0, len = $scope.events.length; i < len; i++) {
                             if ($scope.events[i]['id'] === e.id) {
-                                //$scope.events[i] = e; // update
+                                $scope.events[i] = e; // update
+                                //angular.extend($scope.events[i], e);
                                 found = true;
                                 break;
                             }
@@ -337,6 +339,12 @@
                     resizeVKHeight();
                 }
             };
+
+            function cropName(name) {
+                var n = name.search(' at ');
+                if (n > 0) return name.substr(0, n);
+                return name;
+            }
         }
     ]);
 

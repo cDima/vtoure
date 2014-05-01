@@ -94,16 +94,27 @@
 
 /* starting animations */
 .ng-enter {
-  -webkit-transition: 1s;
-  transition: 1s;
+  -webkit-transition: .8s;
+  transition: .8s;
   
     opacity:0;
+    -webkit-transform-origin: top left;
 }
 
 /* destination animations */
 .ng-enter-active {
     opacity:1;
 }
+
+.highlight.ng-enter {
+    background: yellow;
+    -webkit-transform: rotateX(90deg);
+}
+.highlight.ng-enter-active {
+    background: white;
+    -webkit-transform: rotateX(0deg);
+}
+
 
 /* starting animations */
 .ng-leave {
@@ -118,8 +129,8 @@
 
 /* starting animations */
 .ng-hide-add{
-    -webkit-transition: 1s;
-    transition: 1s;
+    -webkit-transition: .5s;
+    transition: .5s;
   
     opacity:1; /* visible */
     
@@ -134,7 +145,7 @@
 }
 
 
-.ng-hide-remove{
+/*.ng-hide-remove{
     -webkit-transition: 1s;
     transition: 1s;
   
@@ -142,4 +153,4 @@
 }
 .ng-hide-remove-active {
    opacity:1;
-}
+}*/
