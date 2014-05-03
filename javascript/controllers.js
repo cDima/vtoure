@@ -16,7 +16,7 @@
         '$scope', '$q', 'storage', 'geocoder', 'songkick', '$filter', function($scope, $q, storage, geocoder, songkick, $filter) {
 
             $scope.eventId = getQueryVariable("request_key");
-            $scope.event = {};
+            $scope.event = null;
             $scope.getGetInvited = function() {
                 if ($scope.eventId != false) {
                     songkick.getEvent($scope.eventId).then(function (results) {
