@@ -7,12 +7,15 @@
 
     angular.module('backgroundImgDirective', [])
     .directive('backImg', function(){
-        return function(scope, element, attrs){
-            var url = attrs.backImg;
-            element.css({
-                'background-image': 'url(' + url +')',
-                'background-size' : 'cover'
-            });
+        return function (scope, element, attrs) {
+            attrs.$observe("backImg", function (url, o) {
+                if (!url) return;
+                element.css({
+                    'background-image': 'url(' + url + ')',
+                    'background-size': 'cover'
+                });
+
+            }, true);
         };
     });
 
