@@ -5,13 +5,32 @@
 (function (window, angular) {
     'use strict';
 
-    var vtoureApp = angular.module('vtoureApp', ['backgroundImgDirective', 'ngAnimate', 'angularLocalStorage', 'geocodeModule', 'songkickJS', 'ui.bootstrap']);
+    var vtoureApp = angular.module('vtoureApp', ['backgroundImgDirective',
+        'ngAnimate',
+        'angularLocalStorage',
+        'geocodeModule',
+        'songkickJS',
+        'ui.bootstrap']);
 
     vtoureApp.controller('vtoureCtrl', [
-        '$scope', '$q', 'storage', 'geocoder', 'songkick', function ($scope, $q, storage, geocoder, songkick) {
+        '$scope', '$q', 'storage', 'geocoder', 'songkick', '$filter', function($scope, $q, storage, geocoder, songkick, $filter) {
+
+            $scope.eventId = getQueryVariable("request_key");
+            $scope.event = {};
+            $scope.getGetInvited = function() {
+                if ($scope.eventId != false) {
+                    songkick.getEvent($scope.eventId).then(function (results) {
+                        
+                            $scope.event = results.event;
+                        
+                        resizeVKHeight();
+                    }, error);
+                }
+            };
 
             $scope.artists = [];
-
+            $scope.friends = [];
+            $scope.friend = "";
             $scope.person = {};
             $scope.events = storage.get("events");
             if ($scope.events == null) $scope.events = [];
@@ -79,7 +98,6 @@
                 $scope.onChangeLocation();
             };
 
-
             $scope.getAllConcertsArea = function() {
                 if ($scope.location.metroId !== undefined) {
                     songkick.getAllLocationEvents($scope.location.metroId).then(function (results) {
@@ -90,7 +108,36 @@
                     }, onerror);
                 }
             };
+            $scope.setFriends = function (friends) {
+                $scope.friends = friends;
+                //$scope.friend = $scope.friends[0].first_name + " " + $scope.friends[0].last_name;
+            };
+            $scope.showRequestBox = function (user, event) {
+                debugger;
+                //VK.callMethod('showRequestBox', user.id, 'Предлагаю пойти на концерт группы ', event.id);
+                var mess = 'Предлагаю пойти на концерт ' + event.displayName +
+                    ' (' + $filter('date')(event.start.date, 'MMM d, y') +
+                    $filter('date')(event.start.datetime, ', h a') + ') @ ' + event.venue.displayName + ', ' + event.location.city;
 
+                var groups = event.performance.filter(isInteresting).map(function(p) {
+                    return p.displayName;
+                }).join(', ');
+                if (groups != "") {
+                    mess += ' c выступлениями ' + groups;
+                }
+                mess += ".";
+                
+                VK.callMethod('showRequestBox', user.id, mess, event.id);
+            };
+            function isInteresting(performance) {
+                return performance.interesting == true;
+            }
+
+            //$scope.onSendFriendFocus = function () {
+            //    if ($scope.friend == '')
+            //        $scope.friend = $scope.friends[0].first_name.charAt(0);
+            //};
+            
             $scope.changeLocation = function(cityName) {
                 $scope.locationName = cityName;
                 $scope.onChangeLocation();
@@ -345,6 +392,8 @@
                 if (n > 0) return name.substr(0, n);
                 return name;
             }
+            
+            $scope.getGetInvited();
         }
     ]);
 

@@ -27,211 +27,267 @@
         <div class="container-fluid paddingtop">
             <div class="row">
                 <div class="col-md-12">
-                    <!--<div class="well well-sm  clearfix" ng-cloak>
-                        <div id="vk_auth"></div>
-                    </div>-->
-                    <div class="well well-sm  clearfix" id="permissionsAlert" ng-show="!window.permissionsGranted"  ng-cloak>
-                        <div class="text-default">Приложению нужен доступ к аудио записям. <button id="audiopermissions" class="btn btn-primary btn-xs">разрешить доступ к аудио</button></div>
-                    </div>
                     
-                    <!--
-                        <p class="btn-group btn-group-sm">
-                            <button type="button" class="btn btn-default" ng-class="{active: !filterByArtists}">Все концерты</button>
-                            <button type="button" class="btn btn-default" ng-class="{active: filterByArtists}">Мои исполнители ({{artists.length}})</button>
-                        </p>    
-
-                        <p>
-                            <span class="small">Искать исполнителя: </span>
-                            <input type="text" class="form-control input-sm inputtown" placeholder="The Glitch Mob" ng-model="artistFilterName" />
-                            <button type="submit" class="btn btn-default btn-sm inputtown" ng-click="onFilterArtist()"><span class="glyphicon glyphicon-map-marker"></span> Искать</button>
-                        </p>-->
-                                        
-                    <div class="">
-                        <div class="">
-                            
-                        </div>
-                        <div class="">
-                            <div class="row">
-                                <div class="col-xs-6">
-                                    <label for="artistSearch" style="font-weight: normal"><small>Искать конкретного исполнителя: </small></label>
-                                    <form class="rounded-search has-feedback" ng-keydown="artistFilterValid = true"  ng-class="{'has-error': (!artistFilterValid && artistFilter != '')}">
-                                        <input id="artistSearch" type="text" 
+                    <!-- $scope.event -->
+                    <div class="alert alert-info alert-dismissable" ng-cloak>
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        <a class="pull-left" href="{{event.uri}}" target="_blank" onclick="trackOutboundLink(this.href);">
+                            <div style="background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIj48L3JlY3Q+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+); width: 64px; height: 64px;margin-right: 10px; max-height: 64px; max-width:64px;" class="img-rounded" >
+                                <div back-img="https://ssl.sk-static.com/images/media/profile_images/venues/{{event.venue.id}}/col1" style="width: 64px; height: 64px;margin-right: 10px; max-height: 64px; max-width:64px;"  class="img-rounded">
+                                    <div back-img="https://ssl.sk-static.com/images/media/profile_images/artists/{{event.performance[0].artist.id}}/col1" style="width: 64px; height: 64px;margin-right: 10px; max-height: 64px; max-width:64px;" class="img-rounded media-object"> 
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="media-body">
+                            <h4 class="media-heading"><a href="{{event.uri}}&appsrc=vteme" onclick="trackOutboundLink(this.href);" target="_blank">{{event.displayName}}</a></h4>
+                            <b>{{event.start.date | date:'MMM d, y'}}{{event.start.datetime | date:', h a'}}</b> <br/>
+                            <a href="{{event.venue.uri}}&appsrc=vteme" onclick="trackOutboundLink(this.href);" target="_blank">{{event.venue.displayName}}</a>, {{event.location.city}}
+                            <div style="margin-top: 3px;">
+                                <span class="small pull-left">
+                                    <form class="borderless has-feedback">
+                                        <input type="text"
                                                class="form-control input-sm longinput" 
-                                               placeholder="Исполнитель" 
-                                               ng-model="artistFilter" 
-                                            /><button type="submit" class="btn btn-primary btn-sm" ng-click="filterByArtist(artistFilter)">Искать</button>
-                                            <!--
-                                            typeahead="artist.displayName for artist in artists |  filter:$viewValue  | limitTo:8" 
-                                            typeahead-editable="true" 
-                                            typeahead="location.name for location in locations | limitTo:8" 
-                                            -->
-                                        <span class="glyphicon glyphicon-music"></span>
+                                               ng-model="friend"
+                                               typeahead="friend as (friend.first_name + ' ' + friend.last_name) for friend in friends |  filter:$viewValue  | limitTo:8" 
+                                               placeholder="Поделиться" 
+                                               typeahead-min-length="0"
+                                               typeahead-append-to-body="true"
+                                               typeahead-template-url="friendDropdownTemplate.html"
+                                               typeahead-on-select="showRequestBox($item, event); friend = '';"
+                                            />
                                     </form>
-                                    <div class="small" style="color:#ccc;padding-top: 6px; padding-left: 6px;">Например <i>The Glitch Mob</i></div>
-                                </div>
-                                <div class="col-xs-6">
-                                    <label for="inputLocation" style="font-weight: normal"><small>Искать в другом городе: </small></label>
-                                    <form class="input-location rounded-search has-feedback" ng-class="{'has-error': !locationNameValid}">
-                                        <input id="inputLocation" type="text" class="form-control input-sm longinput" 
-                                               placeholder="Нью Йорк" 
-                                               ng-model="locationName" /><button type="submit" class="btn btn-primary btn-sm inputtown" ng-click="onChangeLocation()">Искать</button>
-                                        <span class="glyphicon glyphicon-map-marker"></span>
-                                    </form>
-                                    <!-- locations -->
-                                    <div class=" form-group clearfix" style="padding-top: 6px; padding-left: 6px;">
-                                        <span class="small" > 
-                                            <a href="" 
-                                               ng-repeat="loc in locations"
-                                               class="location-name"
-                                               ng-click="changeLocation(loc.name)">
-                                                <span class="glyphicon glyphicon-map-marker"></span> 
-                                                {{loc.name}} 
-                                            </a>
-                                            <br/>
-                                        </span>
-                                    </div> 
-                                </div>
+                                </span>
+
+                                <span ng-repeat="artist in event.performance | orderBy: 'interesting'">
+                                    <a class="btn btn-xs" ng-click="filterByArtist(artist.displayName)" style="margin-bottom: 6px;"
+                                       ng-class="{'btn-primary': artist.interesting, 'btn-info': !artist.interesting}"
+                                        >
+                                        {{artist.displayName}} 
+                                    </a>
+                                </span>
                             </div>
+                        </div>
+
+                    </div>
+
+                        <!--<div class="well well-sm  clearfix" ng-cloak>
+                                <div id="vk_auth"></div>
+                            </div>-->
+                        <div class="well well-sm  clearfix" id="permissionsAlert" ng-show="!window.permissionsGranted"  ng-cloak>
+                            <div class="text-default">Приложению нужен доступ к аудио записям и друзьям. <button id="audiopermissions" class="btn btn-primary btn-xs">разрешить доступ</button></div>
+                        </div>
+                    
+                        <!--
+                            <p class="btn-group btn-group-sm">
+                                <button type="button" class="btn btn-default" ng-class="{active: !filterByArtists}">Все концерты</button>
+                                <button type="button" class="btn btn-default" ng-class="{active: filterByArtists}">Мои исполнители ({{artists.length}})</button>
+                            </p>    
+
+                            <p>
+                                <span class="small">Искать исполнителя: </span>
+                                <input type="text" class="form-control input-sm inputtown" placeholder="The Glitch Mob" ng-model="artistFilterName" />
+                                <button type="submit" class="btn btn-default btn-sm inputtown" ng-click="onFilterArtist()"><span class="glyphicon glyphicon-map-marker"></span> Искать</button>
+                            </p>-->
+                                        
+                        <div class="">
+                            <div class="">
                             
-                            <div class="row">
-                                <div class="col-xs-12">
-                                                
-                                    <div class="progress progress-striped active clearfix" 
-                                         id="artistsProgressbar" 
-                                         ng-hide="(progressCount == 0 || progressCount >= artists.length)" ng-cloak>
-                                        <div class="progress-bar"  
-                                             role="progressbar" 
-                                             aria-valuenow="{{progressCount}}" 
-                                             aria-valuemin="0" 
-                                             aria-valuemax="{{artists.length}}" 
-                                             style="width: {{(100 * progressCount / artists.length)}}%">
-                                            {{progressCount}} / {{artists.length}}
-                                        </div>
-                                    </div>
-
-                                </div>
                             </div>
-
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <div class=""  id="artists-ng" ng-hide="(artists.length == 0)" ng-cloak>
-                                        <div style="margin-bottom: 6px"><small>Исполнителей с концертами {{artistsInTourCount}}</small> из {{artists.length}}.</div>
-                                        <div>
-                                            <span ng-repeat="artist in artists | orderBy: '-events.length' | limitTo:25">
-                                                <a class="btn btn-default btn-xs" ng-click="filterByArtist(artist.displayName)"
-                                                   ng-class="{'btn-primary': (artist.queriedEvents && artist.events.length > 0), 'btn-warning': (artist.queriedEvents && artist.events.length == 0), 'btn-info': (!artist.queriedEvents)}"
-                                                   style="margin-bottom: 6px;">
-                                                    {{artist.displayName}} <!-- <span ng-hide="artist.events.length == 0">{{artist.events.length}}</span> -->
+                            <div class="">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <label for="artistSearch" style="font-weight: normal"><small>Искать конкретного исполнителя: </small></label>
+                                        <form class="rounded-search has-feedback" ng-keydown="artistFilterValid = true"  ng-class="{'has-error': (!artistFilterValid && artistFilter != '')}">
+                                            <input id="artistSearch" type="text" 
+                                                   class="form-control input-sm longinput" 
+                                                   placeholder="Исполнитель" 
+                                                   ng-model="artistFilter" 
+                                                /><button type="submit" class="btn btn-primary btn-sm" ng-click="filterByArtist(artistFilter)">Искать</button>
+                                            <!--
+                                                typeahead="artist.displayName for artist in artists |  filter:$viewValue  | limitTo:8" 
+                                                typeahead-editable="true" 
+                                                typeahead="location.name for location in locations | limitTo:8" 
+                                                -->
+                                            <span class="glyphicon glyphicon-music"></span>
+                                        </form>
+                                        <div class="small" style="color:#ccc;padding-top: 6px; padding-left: 6px;">Например <i>The Glitch Mob</i></div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <label for="inputLocation" style="font-weight: normal"><small>Искать в другом городе: </small></label>
+                                        <form class="input-location rounded-search has-feedback" ng-class="{'has-error': !locationNameValid}">
+                                            <input id="inputLocation" type="text" class="form-control input-sm longinput" 
+                                                   placeholder="Нью Йорк" 
+                                                   ng-model="locationName" /><button type="submit" class="btn btn-primary btn-sm inputtown" ng-click="onChangeLocation()">Искать</button>
+                                            <span class="glyphicon glyphicon-map-marker"></span>
+                                        </form>
+                                        <!-- locations -->
+                                        <div class=" form-group clearfix" style="padding-top: 6px; padding-left: 6px;">
+                                            <span class="small" > 
+                                                <a href="" 
+                                                   ng-repeat="loc in locations"
+                                                   class="location-name"
+                                                   ng-click="changeLocation(loc.name)">
+                                                    <span class="glyphicon glyphicon-map-marker"></span> 
+                                                    {{loc.name}} 
                                                 </a>
+                                                <br/>
                                             </span>
-                                            <span class="small" ng-show="artists.length > 25"> ...а так же {{artists.length - 25}} других.</span>
-                                        </div>
+                                        </div> 
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <br/>
-                                    <p>Найдено концертов в городе {{location.name}}: <b>{{(events| filter: location.metroId | filter: artistFilter).length}}</b></p>
-                                    <div class="media highlight" ng-repeat="event in events| filter: location.metroId | filter: artistFilter |orderBy:'start.datetime'" 
-                                         
-                                         ng-cloak>
-                                        <a class="pull-left" href="{{event.uri}}" target="_blank" onclick="trackOutboundLink(this.href);">
-                                            <div style="background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIj48L3JlY3Q+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+); width: 64px; height: 64px;margin-right: 10px; max-height: 64px; max-width:64px;" class="img-rounded" >
-                                                <div back-img="https://ssl.sk-static.com/images/media/profile_images/venues/{{event.venue.id}}/col1" style="width: 64px; height: 64px;margin-right: 10px; max-height: 64px; max-width:64px;"  class="img-rounded">
-                                                    <div back-img="https://ssl.sk-static.com/images/media/profile_images/artists/{{event.performance[0].artist.id}}/col1" style="width: 64px; height: 64px;margin-right: 10px; max-height: 64px; max-width:64px;" class="img-rounded media-object"> 
-                                                    </div>
-                                                </div>
+                            
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                                
+                                        <div class="progress progress-striped active clearfix" 
+                                             id="artistsProgressbar" 
+                                             ng-hide="(progressCount == 0 || progressCount >= artists.length)" ng-cloak>
+                                            <div class="progress-bar"  
+                                                 role="progressbar" 
+                                                 aria-valuenow="{{progressCount}}" 
+                                                 aria-valuemin="0" 
+                                                 aria-valuemax="{{artists.length}}" 
+                                                 style="width: {{(100 * progressCount / artists.length)}}%">
+                                                {{progressCount}} / {{artists.length}}
                                             </div>
-                                        </a>
-                                        <div class="media-body">
-                                            <h4 class="media-heading">{{event.displayName}}</h4>
-                                            <a href="{{event.uri}}&appsrc=vteme" onclick="trackOutboundLink(this.href);" target="_blank"><b>{{event.start.date | date:'MMM d, y'}}{{event.start.datetime | date:', h a'}}</b></a> @ 
-                                            <a href="{{event.venue.uri}}&appsrc=vteme" onclick="trackOutboundLink(this.href);" target="_blank">{{event.venue.displayName}}</a>, {{event.location.city}}
-                                            <div style="margin-top: 3px;">
-                                                <span ng-repeat="artist in event.performance | orderBy: 'interesting'">
-                                                    <a class="btn btn-xs" ng-click="filterByArtist(artist.displayName)" style="margin-bottom: 6px;"
-                                                       ng-class="{'btn-primary': artist.interesting, 'btn-info': !artist.interesting}"
-                                                        >
-                                                        {{artist.displayName}} 
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class=""  id="artists-ng" ng-hide="(artists.length == 0)" ng-cloak>
+                                            <div style="margin-bottom: 6px"><small>Исполнителей с концертами {{artistsInTourCount}}</small> из {{artists.length}}.</div>
+                                            <div>
+                                                <span ng-repeat="artist in artists | orderBy: '-events.length' | limitTo:25">
+                                                    <a class="btn btn-default btn-xs" ng-click="filterByArtist(artist.displayName)"
+                                                       ng-class="{'btn-primary': (artist.queriedEvents && artist.events.length > 0), 'btn-warning': (artist.queriedEvents && artist.events.length == 0), 'btn-info': (!artist.queriedEvents)}"
+                                                       style="margin-bottom: 6px;">
+                                                        {{artist.displayName}} <!-- <span ng-hide="artist.events.length == 0">{{artist.events.length}}</span> -->
                                                     </a>
                                                 </span>
-                                            </div><!--
-                                            <p class="small">
-                                                <a href="" ng-click="collapse = !collapse">Отправить другу</a>
-                                                <div ng-show="collapse">
-                                                    <input type="text"
-                                                            class="form-control input-sm longinput" 
-                                                           typeahead="friend.name for friend in vk.friends |  filter:$viewValue  | limitTo:8" 
-                                                           typeahead-editable="false">
-                                                        
-                                                    </input>
-
-                                                </div>
-                                            </p>-->
+                                                <span class="small" ng-show="artists.length > 25"> ...а так же {{artists.length - 25}} других.</span>
+                                            </div>
                                         </div>
-                                        <p>
-                                            
-                                        </p>
-                                    </div>  
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <br/>
+                                        <p>Найдено концертов в городе {{location.name}}: <b>{{(events| filter: location.metroId | filter: artistFilter).length}}</b></p>
+                                        <div class="media highlight" ng-repeat="event in events| filter: location.metroId | filter: artistFilter |orderBy:'start.datetime'" 
+                                             ng-cloak>
+                                        
+                                            <a class="pull-left" href="{{event.uri}}" target="_blank" onclick="trackOutboundLink(this.href);">
+                                                <div style="background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIj48L3JlY3Q+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+); width: 64px; height: 64px;margin-right: 10px; max-height: 64px; max-width:64px;" class="img-rounded" >
+                                                    <div back-img="https://ssl.sk-static.com/images/media/profile_images/venues/{{event.venue.id}}/col1" style="width: 64px; height: 64px;margin-right: 10px; max-height: 64px; max-width:64px;"  class="img-rounded">
+                                                        <div back-img="https://ssl.sk-static.com/images/media/profile_images/artists/{{event.performance[0].artist.id}}/col1" style="width: 64px; height: 64px;margin-right: 10px; max-height: 64px; max-width:64px;" class="img-rounded media-object"> 
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <div class="media-body">
+                                                <h4 class="media-heading"><a href="{{event.uri}}&appsrc=vteme" onclick="trackOutboundLink(this.href);" target="_blank">{{event.displayName}}</a></h4>
+                                                <b>{{event.start.date | date:'MMM d, y'}}{{event.start.datetime | date:', h a'}}</b> <br/>
+                                                <a href="{{event.venue.uri}}&appsrc=vteme" onclick="trackOutboundLink(this.href);" target="_blank">{{event.venue.displayName}}</a>, {{event.location.city}}
+                                                <div style="margin-top: 3px;">
+                                                    <span class="small pull-left">
+                                                        <form class="borderless has-feedback">
+                                                            <input type="text"
+                                                                   class="form-control input-sm longinput" 
+                                                                   ng-model="friend"
+                                                                   typeahead="friend as (friend.first_name + ' ' + friend.last_name) for friend in friends |  filter:$viewValue  | limitTo:8" 
+                                                                   placeholder="Поделиться" 
+                                                                   typeahead-min-length="0"
+                                                                   typeahead-append-to-body="true"
+                                                                   typeahead-template-url="friendDropdownTemplate.html"
+                                                                   typeahead-on-select="showRequestBox($item, event); friend = '';"
+                                                                />
+                                                        </form>
+                                                    </span>
+
+                                                    <span ng-repeat="artist in event.performance | orderBy: 'interesting'">
+                                                        <a class="btn btn-xs" ng-click="filterByArtist(artist.displayName)" style="margin-bottom: 6px;"
+                                                           ng-class="{'btn-primary': artist.interesting, 'btn-info': !artist.interesting}"
+                                                            >
+                                                            {{artist.displayName}} 
+                                                        </a>
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                        </div>  
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        <script type="text/ng-template" id="eventTemplate.html">
+                        
+                    
+                    </script>    
+                        <script type="text/ng-template" id="friendDropdownTemplate.html">
+                      <a>
+                          <img ng-src="{{match.model.photo_50}}" width="25">
+                          <small style="cursor: default;" bind-html-unsafe="(match.model.first_name + ' ' + match.model.last_name) | typeaheadHighlight:query"></small>
+                      </a>
+                    
+                    </script>
+                    
 
-                    <div class="panel panel-default hidden" ng-cloak>
-                        <div id="preview" class="panel-body small pre-scrollable"></div>
-                    </div>
-                    
-                    <br />
-                    
-                    <div class="panel panel-default"  ng-cloak>
-                        <div class="panel-heading">О приложении</div>
-                        <div class="panel-body small">
-                            <h3>Втеме - поиск концертов по аудиозаписям</h3>
-                            <p>
-                                Приложение позволяет найти концерты в любом городе мира по вашим аудизаписям и по имени группы. 
-                                Не пропускайте концерты своих любимых групп. Поиск лучше работает в США и по американским группам.
-                            </p>
-                            <h3>О разработчике</h3>
-                            <p>
-                                Меня зовут <a href="http://sadakov.com" target="_blank">Дмитрий Садаков</a> и я живу в <a href="" ng-click="changeLocation('Нью Йорк');" >
-                                                                         <span class="glyphicon glyphicon-map-marker"></span>Нью Йорке.
-                                                                     </a><br/>
-                                Приложение сделал для себя, распространяю бесплатно.<br/><br/>
-                            </p>
-                            <h3>Лицензии</h3>
-                            <p>
-                                Иконки редоставлены <a href="http://thenounproject.com/" target="_blank">the noun project</a>. <a href="http://thenounproject.com/term/crowd-surfing/19432/" target="_blank">Crowd-Surfing designed by Hum</a><br/>
-                                <img alt="songkick" src="https://cdima.github.io/vtoure/photoshop/sk.png" />
-                            </p>
-                            <h3>Вопросы</h3>
-                            <p>
-                                Связаться с разработчиком можно в <a href="http://vk.com/sadakov" target="_blank">vk</a> и 
-                                <a href="http://twitter.com/cdima" target="_blank">в твиттере</a>, остальные контакты на 
-                                <a href="http://sadakov.com" target="_blank">sadakov.com</a>. 
-                                Купить кофе мне можно <a href="mailto:sadakov@gmail.com?subject=$2.99&cc=cash@square.com">по почте</a>.
-                                <br/><br/>
-                                <a href=""  ng-click="clearCache()"  >Clear cache</a>
-                            </p>
+                        <div class="panel panel-default hidden" ng-cloak>
+                            <div id="preview" class="panel-body small pre-scrollable"></div>
                         </div>
-                    </div>
-                    <div class="panel panel-default hidden">
-                        <div class="panel-heading">Debug log</div>
-                        <div class="panel-body">
-                            <small>Приложение находится в стадии разработки, ниже отладочная информация.</small>
-                            <div id="log" class="panel-body small pre-scrollable"></div>
-                        </div>
-                    </div>
                     
-                    <p class="text-center small">
-                        Made in NYC, &copy; 2014 <a href="http://sadakov.com" target="_blank">Dmitry Sadakov</a>
-                        <img class="emoji" alt="👾" src="//vk.com/images/emoji/D83DDC7E.png">
-                        <img class="emoji" alt="🍺" src="//vk.com/images/emoji/D83CDF7A.png">
-                        <img class="emoji" alt="🇷" src="//vk.com/images/emoji/D83CDDF7D83CDDFA.png">
-                        <img class="emoji" alt="🇺" src="//vk.com/images/emoji/D83CDDFAD83CDDF8.png"><br/><br/>
-                    </p>
-                </div>
+                        <br />
+                    
+                        <div class="panel panel-default"  ng-cloak>
+                            <div class="panel-heading">О приложении</div>
+                            <div class="panel-body small">
+                                <h3>Втеме - поиск концертов по аудиозаписям</h3>
+                                <p>
+                                    Приложение позволяет найти концерты в любом городе мира по вашим аудизаписям и по имени группы. 
+                                    Не пропускайте концерты своих любимых групп. Поиск лучше работает в США и по американским группам.
+                                </p>
+                                <h3>О разработчике</h3>
+                                <p>
+                                    Меня зовут <a href="http://sadakov.com" target="_blank">Дмитрий Садаков</a> и я живу в <a href="" ng-click="changeLocation('Нью Йорк');" >
+                                                                                                                               <span class="glyphicon glyphicon-map-marker"></span>Нью Йорке.
+                                                                                                                           </a><br/>
+                                    Приложение сделал для себя, распространяю бесплатно.<br/><br/>
+                                </p>
+                                <h3>Лицензии</h3>
+                                <p>
+                                    Иконки редоставлены <a href="http://thenounproject.com/" target="_blank">the noun project</a>. <a href="http://thenounproject.com/term/crowd-surfing/19432/" target="_blank">Crowd-Surfing designed by Hum</a><br/>
+                                    <img alt="songkick" src="https://cdima.github.io/vtoure/photoshop/sk.png" />
+                                </p>
+                                <h3>Вопросы</h3>
+                                <p>
+                                    Связаться с разработчиком можно в <a href="http://vk.com/sadakov" target="_blank">vk</a> и 
+                                    <a href="http://twitter.com/cdima" target="_blank">в твиттере</a>, остальные контакты на 
+                                    <a href="http://sadakov.com" target="_blank">sadakov.com</a>. 
+                                    Купить кофе мне можно <a href="mailto:sadakov@gmail.com?subject=$2.99&cc=cash@square.com">по почте</a>.
+                                    <br/><br/>
+                                    <a href=""  ng-click="clearCache()"  >Clear cache</a>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="panel panel-default hidden">
+                            <div class="panel-heading">Debug log</div>
+                            <div class="panel-body">
+                                <small>Приложение находится в стадии разработки, ниже отладочная информация.</small>
+                                <div id="log" class="panel-body small pre-scrollable"></div>
+                            </div>
+                        </div>
+                        <p class="text-center small">
+                            Made in NYC, &copy; 2014 <a href="http://sadakov.com" target="_blank">Dmitry Sadakov</a>
+                            <img class="emoji" alt="👾" src="//vk.com/images/emoji/D83DDC7E.png">
+                            <img class="emoji" alt="🍺" src="//vk.com/images/emoji/D83CDF7A.png">
+                            <img class="emoji" alt="🇷" src="//vk.com/images/emoji/D83CDDF7D83CDDFA.png">
+                            <img class="emoji" alt="🇺" src="//vk.com/images/emoji/D83CDDFAD83CDDF8.png"><br/><br/>
+                        </p>
+                    </div>
             </div>
         </div> <!-- container -->
         

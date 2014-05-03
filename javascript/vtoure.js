@@ -6,6 +6,7 @@
     var artists = [];
     var person = null;
     var permissionsAlert = $("#permissionsAlert");
+    var neededPermissions = 10;
     
     $('#audiopermissions').click(function () { requestPermissions(); return false; });
 
@@ -55,6 +56,17 @@
             var scope = angular.element($("#vtoureApp")).scope();
             scope.$apply(function () {
                 scope.person = person; // show user greeting
+            });
+        });
+    }
+
+    function getFriends() {
+        log("in getFriends");
+        debugger;
+        VK.api("friends.get", { fields: 'nickname, city, country, timezone, photo_50' }, function (data) {
+            var scope = angular.element($("#vtoureApp")).scope();
+            scope.$apply(function() {
+                scope.setFriends(data.response.items); // scan all artists.
             });
         });
     }
@@ -142,7 +154,6 @@
         //}
 
         // audio +8
-        var neededPermissions = 8;
         window.permissionsGranted = (perms & neededPermissions) === neededPermissions;
         if (!window.permissionsGranted) {
             error("needed Permissions are not granted, need " + neededPermissions + " have " + perms);
@@ -158,7 +169,7 @@
     }
 
     function requestPermissions() {
-        VK.callMethod("showSettingsBox", 8); // call for permissions
+        VK.callMethod("showSettingsBox", neededPermissions); // call for permissions
         event("Person", "SettingsClicked", null, null, false); // is actually interaction
     }
 
@@ -168,6 +179,7 @@
         permissionsAlert.toggle(!window.permissionsGranted);
         getPersonalGreeting();
         getAudioAuthors();
+        getFriends();
         event("Person", "SettingsChanged", "Settings Changed", settings, true);
     };
 
