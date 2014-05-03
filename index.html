@@ -177,7 +177,7 @@
                                     <div class="col-xs-12">
                                         <br/>
                                         <p>Найдено концертов в городе {{location.name}}: <b>{{(events| filter: location.metroId | filter: artistFilter).length}}</b></p>
-                                        <div class="media highlight" ng-repeat="event in events| filter: location.metroId | filter: artistFilter |orderBy:'start.datetime'" 
+                                        <div class="media highlight" ng-repeat="event in events| filter: location.metroId | filter: artistFilter | orderBy:'start.datetime' | orderBy:'start.date'" 
                                              ng-cloak>
                                         
                                             <a class="pull-left" href="{{event.uri}}" target="_blank" onclick="trackOutboundLink(this.href);">
