@@ -30,6 +30,11 @@
         }
         
         var publicMethods = {
+            getEvent: function (eventId) {
+                // sanatize 
+                eventId = eventId.replace(/^\D+/g, '');
+                return jsonpRequest('events/' + eventId + '.json', { });
+            },
             getEvents: function(artist, displayName) {
                 return jsonpRequest('events.json', { location: "clientip", artist_name: artist });
             },
