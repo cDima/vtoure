@@ -104,12 +104,14 @@
                                                    placeholder="Исполнитель" 
                                                    ng-model="artistFilter" 
                                                 /><button type="submit" class="btn btn-primary btn-sm" ng-click="filterByArtist(artistFilter)">Искать</button>
+                                            
                                             <!--
                                                 typeahead="artist.displayName for artist in artists |  filter:$viewValue  | limitTo:8" 
                                                 typeahead-editable="true" 
                                                 typeahead="location.name for location in locations | limitTo:8" 
                                                 -->
-                                            <span class="glyphicon glyphicon-music"></span>
+                                            <span class="info-icon glyphicon glyphicon-music"></span>
+                                            <span class="clear-icon glyphicon glyphicon-remove" ng-click="artistFilter = ''" ng-show="artistFilter != ''"></span>
                                         </form>
                                         <div class="small" style="color:#ccc;padding-top: 6px; padding-left: 6px;">Например <i>The Glitch Mob</i></div>
                                     </div>
@@ -119,7 +121,7 @@
                                             <input id="inputLocation" type="text" class="form-control input-sm longinput" 
                                                    placeholder="Нью Йорк" 
                                                    ng-model="locationName" /><button type="submit" class="btn btn-primary btn-sm inputtown" ng-click="onChangeLocation()">Искать</button>
-                                            <span class="glyphicon glyphicon-map-marker"></span>
+                                            <span class="info-icon glyphicon glyphicon-map-marker"></span>
                                         </form>
                                         <!-- locations -->
                                         <div class=" form-group clearfix" style="padding-top: 6px; padding-left: 6px;">

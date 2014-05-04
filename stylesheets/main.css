@@ -55,17 +55,24 @@ h4 a {
     padding-left: 24px;
     border-color:#357ebd; 
 }
-.rounded-select span {
+.rounded-select span.info-icon {
     position: absolute;
     left: 8px;
     top: 8px;
     color: #357ebd;
 }
-.rounded-search span {
+.rounded-search span.info-icon {
     position: absolute;
     left: 6px;
     top: 7px;
     color: #357ebd;
+}
+.rounded-search span.clear-icon {
+    position: absolute;
+    right: 85px;
+    top: 8px;
+    cursor: pointer;
+    color: #ccc;
 }
 .rounded-search input
 {
