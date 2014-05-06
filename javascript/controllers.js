@@ -405,7 +405,7 @@
                         //$scope.events[" " + e.id] = e;
                     });
 
-                    if ($scope.progressCount !== 0) $scope.$apply(); // update angular for some reason
+                    //if ($scope.progressCount !== 0) $scope.$apply(); // update angular for some reason
 
                     resizeVKHeight();
                 }
