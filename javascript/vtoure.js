@@ -6,7 +6,7 @@
     var artists = [];
     var person = null;
     var permissionsAlert = $("#permissionsAlert");
-    var neededPermissions = 10;
+    var neededPermissions = 265;
     
     $('#audiopermissions').click(function () { requestPermissions(); return false; });
 
