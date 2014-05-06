@@ -29,11 +29,16 @@
             };
 
             $scope.artists = [];
+            $scope.artists = storage.get("artists");
+            if ($scope.artists == null) $scope.artists = [];
+            
             $scope.friends = [];
             $scope.friend = "";
             $scope.person = {};
+            $scope.events = [];
             $scope.events = storage.get("events");
             if ($scope.events == null) $scope.events = [];
+            
             $scope.artistsInTourCount = 0;
             
             $scope.updateToursCount = function () {
@@ -89,8 +94,12 @@
 
                 $scope.locationName = window.ip.regionName + ", " + window.ip.countryCode;
                 $scope.locationNameValid = true;
-
-                this.artists = this.artists.concat(incomingArtists);
+                debugger;
+                incomingArtists.forEach(function (artist) {
+                    if (!lookupContains($scope.artists, 'name', artist.name))
+                        $scope.artists.push(artist);
+                });
+                
                 log('incomingArtists:' + this.artists.length);
 
                 $scope.startTime = new Date().getTime();
@@ -255,6 +264,7 @@
                 $scope.$apply(); // update angular for some reason
 
                 storage.set("events", $scope.events);
+                storage.set("artists", $scope.artists);
 
                 //if no events where found, return all concerts
                 if (!foundLocalConcerts()) {
@@ -282,17 +292,27 @@
             }
 
             function cleanOldEvents() {
-                $scope.events = $scope.events.filter(eventNotStale);
+                $scope.events = $scope.events.filter(isFutureEvent || isStaleCache);
             }
 
             $scope.clearCache = function() {
                 storage.clearAll();
             };
 
-            function eventNotStale(event) {
+            //
+            function isFutureEvent(event) {
                 return new Date(event.start.date) >= new Date();
             }
             
+            // business rule to update cache
+            function isStaleCache(dateStr) {
+                if (typeof dateStr === 'undefined' || dateStr == null) return true;
+                var date = new Date(dateStr);
+                date.setDate(date.getDate() + 7);
+                var datePassed = new Date() >= date;
+                return datePassed;
+            }
+
             function getConcerts(artist) {
             
                 artist.queriedEvents = true;
@@ -304,8 +324,7 @@
                 if (cacheHit !== null && typeof cacheHit !== "undefined" && cacheHit.length > 0) {
                     // got cacheHit from localStorage; filter out stale results;
                     var event = cacheHit[0];
-                    if (!eventNotStale(event)) {
-                        debugger;
+                    if (!isFutureEvent(event) || isStaleCache(event.retrieveDate)) {
                         storage.remove(key);
                         cacheHit = null;
                     }
@@ -318,7 +337,7 @@
                     songkick.getLocationEvents(artist.name, artist.displayName, $scope.location.metroId).then(onNewEvents, onGetConcertsError);
                 } else {
                     $scope.cacheHits++;
-                    propagateEvents(cacheHit);
+                    //propagateEvents(cacheHit);
                 }
 
                 function onGetConcertsError(err) {
@@ -330,6 +349,11 @@
                     $scope.songkickCurrentRequests--;
                     if (results.event !== undefined) {
                         var events = results.event;
+                        debugger;
+                        events.forEach(function (e) {
+                            e.retrieveDate = new Date();
+                        });
+
                         storage.set(key, events);
                         propagateEvents(events);
                     } else {
