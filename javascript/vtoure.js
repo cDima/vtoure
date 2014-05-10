@@ -62,7 +62,6 @@
 
     function getFriends() {
         log("in getFriends");
-        debugger;
         VK.api("friends.get", { fields: 'nickname, city, country, timezone, photo_50' }, function (data) {
             var scope = angular.element($("#vtoureApp")).scope();
             scope.$apply(function() {
@@ -148,7 +147,6 @@
         log("video  (+16)	Доступ к видеозаписям." + (perms & 16));
         log("menu +256	Добавление ссылки на приложение в меню слева." + (perms & 256));
 
-        //debugger;
         //if ((perms & 256) === 256) { // left menu 
         //    VK.callMethod("account.setNameInMenu", "втеме"); // set name
         //}

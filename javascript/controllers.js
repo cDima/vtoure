@@ -94,9 +94,8 @@
 
                 $scope.locationName = window.ip.regionName + ", " + window.ip.countryCode;
                 $scope.locationNameValid = true;
-                debugger;
                 incomingArtists.forEach(function (artist) {
-                    if (!lookupContains($scope.artists, 'name', artist.name))
+                    if (!lookupContains($scope.artists, 'name', artist.name)) 
                         $scope.artists.push(artist);
                 });
                 
@@ -122,7 +121,6 @@
                 //$scope.friend = $scope.friends[0].first_name + " " + $scope.friends[0].last_name;
             };
             $scope.showRequestBox = function (user, event) {
-                debugger;
                 //VK.callMethod('showRequestBox', user.id, 'Предлагаю пойти на концерт группы ', event.id);
                 var mess = 'Предлагаю пойти на концерт ' + event.displayName +
                     ' (' + $filter('date')(event.start.date, 'MMM d, y') +
@@ -333,7 +331,6 @@
                 if (cacheHit == null || cacheHit == "undefined") {
                     $scope.songkickHits++;
                     $scope.songkickCurrentRequests++;
-                    debugger;
                     songkick.getLocationEvents(artist.name, artist.displayName, $scope.location.metroId).then(onNewEvents, onGetConcertsError);
                 } else {
                     $scope.cacheHits++;
@@ -349,7 +346,6 @@
                     $scope.songkickCurrentRequests--;
                     if (results.event !== undefined) {
                         var events = results.event;
-                        debugger;
                         events.forEach(function (e) {
                             e.retrieveDate = new Date();
                         });
@@ -376,8 +372,6 @@
                         */
                         
                         // crop name
-                        debugger;
-
                         e.displayName = cropName(e.displayName);
                         
                         //var foundArtist = lookupContains(e.performance, 'displayName', artist.displayName);
@@ -401,7 +395,6 @@
                         }
                         if (!found) $scope.events.push(e); // add to global collection of events
                         $scope.artistsInTourCount++;
-                        //debugger;
                         //$scope.events[" " + e.id] = e;
                     });
 
