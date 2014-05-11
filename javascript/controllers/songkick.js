@@ -55,7 +55,6 @@
                     data.query = cityname;
                 }
                 return jsonpRequest('search/locations.json', data).then(function (result) {
-                    debugger;
                     if (typeof result.location === "undefined")
                         return $q.reject("no results");
                     else

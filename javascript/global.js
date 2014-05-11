@@ -72,10 +72,9 @@ function lookup(array, prop, value) {
     return null;
 }
 
-function lookupContains(array, prop, pattern) {
-    var reg = new RegExp(pattern, "i");
+function lookupContains(array, prop, key) {
     for (var i = 0, len = array.length; i < len; i++)
-        if (array[i][prop].match(reg) != null) return array[i];
+        if (array[i][prop].toLowerCase().indexOf(key.toLowerCase()) != null) return array[i];
     return null;
 }
 
