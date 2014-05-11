@@ -74,7 +74,7 @@ function lookup(array, prop, value) {
 
 function lookupContains(array, prop, key) {
     for (var i = 0, len = array.length; i < len; i++)
-        if (array[i][prop].toLowerCase().indexOf(key.toLowerCase()) != null) return array[i];
+        if (array[i][prop].toLowerCase().indexOf(key.toLowerCase()) != -1) return array[i];
     return null;
 }
 
