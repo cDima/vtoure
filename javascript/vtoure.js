@@ -136,7 +136,8 @@
     
     function getAppPermissions(result) {
         log("in onGetPermissions - permissions of the app: " + (result.response));
-        onSettingsChanged(result.response);
+        var hasPermissions = onSettingsChanged(result.response);
+        if (!hasPermissions) requestPermissions();
     };
 
     function verifyPermissions(perms) {
@@ -150,11 +151,11 @@
         //if ((perms & 256) === 256) { // left menu 
         //    VK.callMethod("account.setNameInMenu", "втеме"); // set name
         //}
-
-        // audio +8
-        window.permissionsGranted = (perms & neededPermissions) === neededPermissions;
+        //window.permissionsGranted = (perms & (neededPermissions - 1)) === neededPermissions;
+        // audio only is ok:
+        window.permissionsGranted = (perms & 8) === 8;
         if (!window.permissionsGranted) {
-            error("needed Permissions are not granted, need " + neededPermissions + " have " + perms);
+            error("needed Permissions are not granted, need audio(8) or " + neededPermissions + " have " + perms);
 
             var $scope = angular.element($("#vtoureApp")).scope();
             
@@ -168,17 +169,18 @@
 
     function requestPermissions() {
         VK.callMethod("showSettingsBox", neededPermissions); // call for permissions
-        event("Person", "SettingsClicked", null, null, false); // is actually interaction
+        //event("Person", "SettingsClicked", null, null, false); // is actually interaction
     }
 
     function onSettingsChanged(settings) {
         log("in onSettingsChanged");
-        verifyPermissions(settings);
+        var hasPermissions = verifyPermissions(settings);
         permissionsAlert.toggle(!window.permissionsGranted);
         getPersonalGreeting();
         getAudioAuthors();
         getFriends();
         event("Person", "SettingsChanged", "Settings Changed", settings, true);
+        return hasPermissions;
     };
 
     function onApplicationAdded() {
