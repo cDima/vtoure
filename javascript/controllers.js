@@ -10,10 +10,15 @@
         'angularLocalStorage',
         'geocodeModule',
         'songkickJS',
+        //'vkJS',
         'ui.bootstrap']);
 
     vtoureApp.controller('vtoureCtrl', [
-        '$scope', '$q', 'storage', 'geocoder', 'songkick', '$filter', function($scope, $q, storage, geocoder, songkick, $filter) {
+        '$scope', '$q', 'storage', 'geocoder', 'songkick', '$filter',
+        //'vk', 
+        function ($scope, $q, storage, geocoder, songkick, $filter
+            //, vk
+        ) {
 
             $scope.eventId = getQueryVariable("request_key");
             $scope.event = null;
@@ -156,7 +161,7 @@
                 //$scope.$apply();
                 resizeVKHeight();
                 // search songkick for the group:
-                if (lookupContains($scope.artists, 'displayName', artistName) == null) {
+                if (lookup($scope.artists, 'displayName', artistName) == null) {
                     $scope.artists.push({ queriedEvents: false, name: artistName, displayName: artistName, events: [] });
                     populateConcerts();
                 }
