@@ -25,9 +25,7 @@
             $scope.getGetInvited = function() {
                 if ($scope.eventId != false) {
                     songkick.getEvent($scope.eventId).then(function (results) {
-                        
-                            $scope.event = results.event;
-                        
+                        $scope.event = results.event;
                         resizeVKHeight();
                     }, error);
                 }
@@ -97,8 +95,6 @@
 
             $scope.newArtists = function(incomingArtists) {
 
-                $scope.locationName = window.ip.regionName + ", " + window.ip.countryCode;
-                $scope.locationNameValid = true;
                 incomingArtists.forEach(function (artist) {
                     if (!lookupContains($scope.artists, 'name', artist.name)) 
                         $scope.artists.push(artist);
@@ -106,8 +102,8 @@
                 
                 log('incomingArtists:' + this.artists.length);
 
+                // start search
                 $scope.startTime = new Date().getTime();
-
                 $scope.onChangeLocation();
             };
 
@@ -415,7 +411,18 @@
                 return name;
             }
             
+            function initLocation() {
+                geocoder.getLocation().error(error).success(function (response) {
+                    window.ip = response;
+                    event("Location", "IpApi", window.ip.query, window.ip.regionName + ", " + window.ip.countryCode + " [" + window.ip.lat, window.ip.lon + "]", true);
+
+                    $scope.locationName = window.ip.regionName + ", " + window.ip.countryCode;
+                    $scope.locationNameValid = true;
+                });
+            }
+
             $scope.getGetInvited();
+            initLocation();
         }
     ]);
 

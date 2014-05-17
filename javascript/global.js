@@ -1,21 +1,21 @@
-﻿$(function () {
-    window.ipapi = {
-        response: {},
-        getLocation: function () {
-            $.ajax({url: "http://ip-api.com/json/"}).fail(error).done(function(response) {
-                window.ip = response;
-                event("Location", "IpApi", window.ip.query, window.ip.regionName + ", " + window.ip.countryCode + " [" + window.ip.lat, window.ip.lon + "]", true);
+﻿//$(function () {
+//    window.ipapi = {
+//        response: {},
+//        getLocation: function () {
+//            $.ajax({url: "http://ip-api.com/json/"}).fail(error).done(function(response) {
+//                window.ip = response;
+//                event("Location", "IpApi", window.ip.query, window.ip.regionName + ", " + window.ip.countryCode + " [" + window.ip.lat, window.ip.lon + "]", true);
 
-                //var scope = angular.element($("#vtoureApp")).scope();
-                //scope.$apply(function () {
-                //});
-            });
-        }
-    };
+//                //var scope = angular.element($("#vtoureApp")).scope();
+//                //scope.$apply(function () {
+//                //});
+//            });
+//        }
+//    };
 
-    ipapi.getLocation();
+//    ipapi.getLocation();
 
-})
+//})
 
 // global functions
 

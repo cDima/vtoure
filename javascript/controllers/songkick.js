@@ -1,4 +1,4 @@
-﻿/// google javascript geocoder angular js module
+﻿/// songkick angular js module
 
 (function (window, angular) {
     'use strict';

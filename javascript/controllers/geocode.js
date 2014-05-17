@@ -5,9 +5,10 @@
 
     var geocode = angular.module('geocodeModule', []);
     
-    geocode.factory('geocoder', ['$q', function ($q) {
+    geocode.factory('geocoder', ['$q', '$http', function ($q, $http) {
         
         var geocoder = new google.maps.Geocoder();
+        
         var publicMethods = {
             geocode: function(address) {
                 var deferred = $q.defer();
@@ -23,9 +24,11 @@
                 });
 
                 return deferred.promise;
+            },
+            getLocation: function() {
+                return $http.get("http://ip-api.com/json/");
             }
         };
-
         return publicMethods;
     }]);
 
