@@ -154,7 +154,11 @@
 
             $scope.filterByArtist = function(artistName) {
                 $scope.artistFilter = artistName;
-                //$scope.$apply();
+                
+                if ($scope.artistFilter === '') {
+                    $('#artistSearch').focus();
+                }
+
                 resizeVKHeight();
                 // search songkick for the group:
                 if (lookup($scope.artists, 'displayName', artistName) == null) {
