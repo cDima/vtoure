@@ -27,7 +27,7 @@
             },
             getLocation: function() {
                 //return $http.get("http://ip-api.com/json/");
-                return $http.get($location.protocol() + "//freegeoip.net/json/");
+                return $http.get($location.protocol() + "://freegeoip.net/json/");
             }
         };
         return publicMethods;
