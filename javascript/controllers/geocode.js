@@ -5,7 +5,7 @@
 
     var geocode = angular.module('geocodeModule', []);
     
-    geocode.factory('geocoder', ['$q', '$http', function ($q, $http) {
+    geocode.factory('geocoder', ['$q', '$http', '$location', function ($q, $http, $location) {
         
         var geocoder = new google.maps.Geocoder();
         
@@ -26,7 +26,8 @@
                 return deferred.promise;
             },
             getLocation: function() {
-                return $http.get("http://ip-api.com/json/");
+                //return $http.get("http://ip-api.com/json/");
+                return $http.get($location.protocol() + "//freegeoip.net/json/");
             }
         };
         return publicMethods;

@@ -418,9 +418,12 @@
             function initLocation() {
                 geocoder.getLocation().error(error).success(function (response) {
                     window.ip = response;
-                    event("Location", "IpApi", window.ip.query, window.ip.regionName + ", " + window.ip.countryCode + " [" + window.ip.lat, window.ip.lon + "]", true);
+                    //event("Location", "IpApi", window.ip.query, window.ip.regionName + ", " + window.ip.countryCode + " [" + window.ip.lat, window.ip.lon + "]", true);
+                    //$scope.locationName = window.ip.regionName + ", " + window.ip.countryCode;
+                    
+                    event("Location", "IpApi", window.ip.ip, window.ip.region_name + ", " + window.ip.country_code + " [" + window.ip.latitude, window.ip.longitude + "]", true);
+                    $scope.locationName = window.ip.region_name + ", " + window.ip.country_code;
 
-                    $scope.locationName = window.ip.regionName + ", " + window.ip.countryCode;
                     $scope.locationNameValid = true;
                 });
             }
