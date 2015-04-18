@@ -319,7 +319,7 @@
             function getConcerts(artist) {
             
                 artist.queriedEvents = true;
-                $scope.progressCount++;
+                //$scope.progressCount++;
 
                 var key = $scope.location.metroId + ":" + artist.name;
                 var cacheHit = storage.get(key);
@@ -336,19 +336,23 @@
                 if (cacheHit == null || cacheHit == "undefined") {
                     $scope.songkickHits++;
                     $scope.songkickCurrentRequests++;
+                    // launch search request
                     songkick.getLocationEvents(artist.name, artist.displayName, $scope.location.metroId).then(onNewEvents, onGetConcertsError);
                 } else {
                     $scope.cacheHits++;
+                    $scope.progressCount++; 
                     //propagateEvents(cacheHit);
                 }
 
                 function onGetConcertsError(err) {
                     $scope.songkickCurrentRequests--;
+                    $scope.progressCount++; 
                     error(err);
                 }
 
                 function onNewEvents(results) {
                     $scope.songkickCurrentRequests--;
+                    $scope.progressCount++;
                     if (results.event !== undefined) {
                         var events = results.event;
                         events.forEach(function (e) {

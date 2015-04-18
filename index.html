@@ -180,7 +180,7 @@
                                         <br/>
                                         <p  ng-cloak>Найдено концертов 
                                         <span ng-hide="artistFilter == ''">«{{artistFilter}}»</span>
-                                        в городе {{location.name}}: <b>{{(events| filter: location.metroId | filter: artistFilter).length}}</b></p>
+                                        в городе «{{location.name}}»: <b>{{(events| filter: location.metroId | filter: artistFilter).length}}</b></p>
                                         <div class="media highlight" ng-repeat="event in events| filter: location.metroId | filter: artistFilter | orderBy:'start.datetime' | orderBy:'start.date'" 
                                              ng-cloak>
                                         
