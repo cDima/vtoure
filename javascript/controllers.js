@@ -227,7 +227,7 @@
             function populateConcerts() {
 
                 var unqueriedArtists = $scope.artists.filter(function(artist) { return !artist.queriedEvents; });
-                $scope.progressCount = $scope.artists.length - unqueriedArtists.length;
+                //$scope.progressCount = $scope.artists.length - unqueriedArtists.length;
                 log('progressCount:' + $scope.progressCount);
 
                 if (unqueriedArtists.length != 0) {
@@ -321,7 +321,7 @@
             function getConcerts(artist) {
             
                 artist.queriedEvents = true;
-                log('getConcerts: //progressHit++');
+                log('getConcerts: progressCount = ' + progressCount + ' >= ' + artists.length + ' artists.length;');
                 //$scope.progressCount++;
 
                 var key = $scope.location.metroId + ":" + artist.name;
@@ -344,22 +344,22 @@
                 } else {
                     $scope.cacheHits++;
                     log('cacheHits++');
-                    //$scope.progressCount++; 
-                    log('//progressHit++');
+                    $scope.progressCount++; 
+                    log('progressCount++');
                     //propagateEvents(cacheHit);
                 }
 
                 function onGetConcertsError(err) {
                     $scope.songkickCurrentRequests--;
                     $scope.progressCount++; 
-                    log('onGetConcertsError: progressHit++');
+                    log('onGetConcertsError: progressCount++ = ' + progressCount);
                     error(err);
                 }
 
                 function onNewEvents(results) {
                     $scope.songkickCurrentRequests--;
                     $scope.progressCount++;
-                    log('onNewEvents: progressHit++');
+                    log('onNewEvents: progressCount++ = ' + progressCount);
                     if (results.event !== undefined) {
                         var events = results.event;
                         events.forEach(function (e) {
