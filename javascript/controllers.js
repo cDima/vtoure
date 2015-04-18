@@ -14,7 +14,7 @@
         'ui.bootstrap']);
 
     vtoureApp.controller('vtoureCtrl', [
-        '$scope', '$q', 'storage', 'geocoder', 'songkick', '$filter','$timeout'
+        '$scope', '$q', 'storage', 'geocoder', 'songkick', '$filter','$timeout',
         //'vk', 
         function ($scope, $q, storage, geocoder, songkick, $filter, $timeout
             //, vk
