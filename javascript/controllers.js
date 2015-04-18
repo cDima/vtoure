@@ -422,7 +422,12 @@
                     //$scope.locationName = window.ip.regionName + ", " + window.ip.countryCode;
                     
                     event("Location", "IpApi", window.ip.ip, window.ip.region_name + ", " + window.ip.country_code + " [" + window.ip.latitude, window.ip.longitude + "]", true);
-                    $scope.locationName = window.ip.region_name + ", " + window.ip.country_code;
+                    
+                    if (window.ip.region_name == '') {
+                        $scope.locationName = 'New York, US'; // default to ny
+                    } else {
+                        $scope.locationName = window.ip.region_name + ", " + window.ip.country_code;
+                    }
 
                     $scope.locationNameValid = true;
                 });
