@@ -221,6 +221,7 @@
                 $scope.artists.forEach(function (artist) {
                     artist.queriedEvents = false;
                 });
+                $scope.progressCount = 0;
                 populateConcerts();
             }
 
