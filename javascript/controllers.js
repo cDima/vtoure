@@ -14,9 +14,9 @@
         'ui.bootstrap']);
 
     vtoureApp.controller('vtoureCtrl', [
-        '$scope', '$q', 'storage', 'geocoder', 'songkick', '$filter',
+        '$scope', '$q', 'storage', 'geocoder', 'songkick', '$filter','$timeout'
         //'vk', 
-        function ($scope, $q, storage, geocoder, songkick, $filter
+        function ($scope, $q, storage, geocoder, songkick, $filter, $timeout
             //, vk
         ) {
 
@@ -240,9 +240,11 @@
 
                     if ($scope.songkickCurrentRequests < 5) {
                         //populateConcerts();
-                        setTimeout(function() { populateConcerts(); }, 50); // sleep for a bit
+                        //setTimeout(function() { populateConcerts(); }, 50); // sleep for a bit
+                        $timeout(populateConcerts, 50);
                     } else {
-                        setTimeout(function() { populateConcerts(); }, 200); // sleep for a bit
+                        //setTimeout(function() { populateConcerts(); }, 200); // sleep for a bit
+                        $timeout(populateConcerts, 200);
                     }
                 } else {
                     var end = new Date().getTime();
